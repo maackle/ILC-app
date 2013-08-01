@@ -1,0 +1,1481 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"gro",
+				"grovebot_commands"
+			],
+			[
+				"Grovebo",
+				"GrovebotCommand"
+			],
+			[
+				"Grove",
+				"GrovebotCommandWrapper"
+			],
+			[
+				"make",
+				"make_citation_location_string"
+			],
+			[
+				"Templ",
+				"TemplateDoesNotExist"
+			],
+			[
+				"Snippet",
+				"SnippetImage"
+			],
+			[
+				"pan",
+				"panel-padding"
+			],
+			[
+				"tren",
+				"trends-color-county-industry"
+			],
+			[
+				"fon",
+				"font-serif"
+			],
+			[
+				"strr",
+				"str_replace"
+			],
+			[
+				"thumb",
+				"thumbnail_id"
+			],
+			[
+				"color-",
+				"color-courses"
+			],
+			[
+				"creat",
+				"create_metric_csv"
+			],
+			[
+				"json",
+				"json_decode"
+			],
+			[
+				"state",
+				"statewide_total"
+			],
+			[
+				"naics-",
+				"naics-trends-graph"
+			],
+			[
+				"naic",
+				"naics_code"
+			],
+			[
+				"nai",
+				"naics_trends"
+			],
+			[
+				"fea",
+				"activeFeature"
+			],
+			[
+				"stroke",
+				"stroke-width"
+			],
+			[
+				"act",
+				"activeColor"
+			],
+			[
+				"DP",
+				"DP0080005"
+			],
+			[
+				"px",
+				"pxSizeEstimate"
+			],
+			[
+				"upda",
+				"updateVisibleFeatures"
+			],
+			[
+				"up",
+				"updateFeatures"
+			],
+			[
+				"lege",
+				"legendHTML"
+			],
+			[
+				"multipoly",
+				"multipolygons"
+			],
+			[
+				"Multi",
+				"MultiPolygonCollection"
+			],
+			[
+				"sp",
+				"span-columns"
+			],
+			[
+				"title-te",
+				"title-text-height"
+			],
+			[
+				"acti",
+				"active-sort"
+			],
+			[
+				"backgrou",
+				"background-image"
+			],
+			[
+				"redi",
+				"redirect_to"
+			],
+			[
+				"imaged",
+				"imagedestroy"
+			],
+			[
+				"message",
+				"message_id"
+			],
+			[
+				"data_",
+				"data_js_string"
+			],
+			[
+				"prop",
+				"property_utilities"
+			],
+			[
+				"pbi_pro",
+				"pbi_profit_share_percent"
+			],
+			[
+				"pbi_ca",
+				"pbi_cash_on_cash_return"
+			],
+			[
+				"pbi",
+				"pbi_profit_share"
+			],
+			[
+				"pb",
+				"pbi_profit_share_percent"
+			],
+			[
+				"capi",
+				"pbi_capital_contribution"
+			],
+			[
+				"profi",
+				"profit_share_percent"
+			],
+			[
+				"prof",
+				"profit_share_at_baseline_percent"
+			],
+			[
+				"perce",
+				"percent_change_above"
+			],
+			[
+				"total",
+				"total_profit"
+			],
+			[
+				"clo",
+				"closing_costs_percent"
+			],
+			[
+				"sell",
+				"sellers_agent_commission"
+			],
+			[
+				"es",
+				"estd_sales_price"
+			],
+			[
+				"part",
+				"partner_capital_contribution"
+			],
+			[
+				"pbi_",
+				"pbi_capital_contribution"
+			],
+			[
+				"tot",
+				"total_investment"
+			],
+			[
+				"seller",
+				"sellers_agent_commission_percent"
+			],
+			[
+				"ac",
+				"acquisition_price"
+			],
+			[
+				"partn",
+				"partner_re_commission_cntribution"
+			],
+			[
+				"pro",
+				"property_insurance"
+			],
+			[
+				"proper",
+				"property_taxes"
+			],
+			[
+				"current",
+				"current_weekly_level"
+			],
+			[
+				"gon",
+				"golden-needle-visualizer"
+			],
+			[
+				"isn",
+				"is_null"
+			],
+			[
+				"gol",
+				"golden_needle_id"
+			],
+			[
+				"imagecop",
+				"imagecopyresized"
+			],
+			[
+				"updateran",
+				"updaterankings"
+			],
+			[
+				"weekly",
+				"weekly_level_id"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "Gruntfile.js",
+			"settings":
+			{
+				"buffer_size": 10241,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/_base.jade",
+			"settings":
+			{
+				"buffer_size": 2523,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/index.jade",
+			"settings":
+			{
+				"buffer_size": 5455,
+				"line_ending": "Unix",
+				"name": "index.jade"
+			}
+		},
+		{
+			"file": "app/styles/main.scss",
+			"settings":
+			{
+				"buffer_size": 70,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/scripts/classes/feature2d.class.coffee",
+			"settings":
+			{
+				"buffer_size": 375,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/scripts/classes/feature.class.coffee",
+			"settings":
+			{
+				"buffer_size": 54,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/scripts/app-init.coffee",
+			"settings":
+			{
+				"buffer_size": 3724,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 47.0,
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"spaces",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"tabs",
+				"Indentation: Convert to Tabs"
+			],
+			[
+				"space",
+				"Indentation: Convert to Spaces"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/michael/www/ilc/ilc.sublime-project",
+		"/Users/michael/www/ilc/app/scripts/app-init.coffee",
+		"/Users/michael/www/ilc/app/index.html",
+		"/Users/michael/www/unc-gis/templates/_base.jade",
+		"/Users/michael/www/ilc/app/uhh.jade",
+		"/Users/michael/www/mandalayoga/frontend/templates/base.html",
+		"/Users/michael/www/mandalayoga/frontend/templates/teachers.html",
+		"/Users/michael/www/mandalayoga/core/views.py",
+		"/Users/michael/www/grove_project/grove/settings/settings.py",
+		"/Users/michael/www/grove_project/logs/django/error.log",
+		"/Users/michael/www/grove_project/grove/website/urls.py",
+		"/Users/michael/www/grove_project/grove/unicorn/urls.py",
+		"/Users/michael/www/grove_project/grove/unicorn/grovebot/urls.py",
+		"/Users/michael/www/grove_project/env/lib/python2.7/site-packages/django/views/generic/base.py",
+		"/Users/michael/www/grove_project/grove/website/instagram/views.py",
+		"/Users/michael/www/grove_project/grove/unicorn/ddf/departments/base/base_config.py",
+		"/Users/michael/www/grove_project/grove/core/orders/order_status/views.py",
+		"/Users/michael/www/grove_project/env/lib/python2.7/site-packages/django/conf/urls/__init__.py",
+		"/Users/michael/www/grove_project/grove/contrib/stockreminders/urls.py",
+		"/Users/michael/www/grove_project/grove/grovebot_commands/test_form_command.py",
+		"/Users/michael/www/grove_project/grove/unicorn/grovebot/commands.py",
+		"/Users/michael/www/grove_project/grove/unicorn/grovebot/__init__.py",
+		"/Users/michael/www/grove_project/grove/unicorn/grovebot/commands/__init__.py",
+		"/Users/michael/www/grove_project/grove/unicorn/grovebot/templates/grovebot/commands.list",
+		"/Users/michael/www/grove_project/grove/grovebot_commands/test_command.py",
+		"/Users/michael/www/grove_project/env/lib/python2.7/site-packages/django/conf/urls/defaults.py",
+		"/Users/michael/www/grove_project/grove/internal/checklists/templates/checklists/base.html",
+		"/Users/michael/www/grove_project/grove/contrib/urls.py",
+		"/Users/michael/www/grove_project/grove/grovebot_commands/__init__.py",
+		"/Users/michael/www/grove_project/grove/unicorn/commando/templates/commando/commands.list",
+		"/Users/michael/www/grove_project/grove/unicorn/commando/templates/commando/list.html",
+		"/Users/michael/www/grove_project/grove/unicorn/commando/models.py",
+		"/Users/michael/www/grove_project/grove/settings/root_urls.py",
+		"/Users/michael/www/grove_project/grove/internal/base/templates/internal/includes/navbar.html",
+		"/Users/michael/www/grove_project/grove/unicorn/commando/templates/commando/_nav_menu.html",
+		"/Users/michael/www/grove_project/grove/unicorn/commando/urls.py",
+		"/Users/michael/www/grove_project/grove/unicorn/commando/views.py",
+		"/Users/michael/www/grove_project/grove/contrib/stockreminders/views.py",
+		"/Users/michael/www/grove_project/grove/core/cart/views.py",
+		"/Users/michael/www/grove_project/env/lib/python2.7/site-packages/django/contrib/formtools/wizard/views.py",
+		"/Users/michael/www/unc-gis/Cakefile",
+		"/Users/michael/www/unc-gis/coffee/Cakefile",
+		"/Users/michael/www/unc-gis/coffee/classes/industrialpolygon.class.coffee",
+		"/Users/michael/www/unc-gis/coffee/classes/multipolygoncollection.class.coffee",
+		"/Users/michael/www/unc-gis/static/js/app.js",
+		"/Users/michael/www/nkaza/nkaza/templates/base.jade",
+		"/Users/michael/www/nkaza/projects/templates/projects/index.jade",
+		"/Users/michael/www/nkaza/nkaza/templates/index.jade",
+		"/Users/michael/www/nkaza/courses/templates/courses/index.jade",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/671B8755-1FF4-474C-8F81-D6046C49C5D2/__portfolio_partial.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/F3E7033A-2474-41FA-AD74-31DB619669A0/_portfolio.php",
+		"/Users/michael/www/michaeldougherty.info/index.html",
+		"/Users/michael/www/michaeldougherty.info/project/website/templates/featured-work.jade",
+		"/Users/michael/www/michaeldougherty.info/project/src/sass/old.scss",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/AC77056E-685C-4FF5-B2E7-D83630430EB9/index.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/08B7555A-3352-4B98-8988-328EB53A02C8/index.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/53C686A1-4D05-4C7F-A7B2-BFDA116F723B/_testimonials.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/83EC1E95-ED40-4317-81D5-F875E474200A/screen.css",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/F68B128A-D52D-4C2D-9407-7C0798AD0EB0/screen.css",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/654101D3-1859-41FC-901C-525BF94C5F4A/_testimonials.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/BFAD09C9-DD8F-4DF9-A272-07F49831A40B/style.css",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/263BA84B-3AA0-4672-A79C-4BC56581556E/header.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/C4326551-D3A3-4190-9587-5B3FCFDC6924/header.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/9C91562D-8359-4735-B645-FA0D948ED603/header.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/C50230E1-2DDB-49DA-9925-06B144C833BD/header.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/9A07837E-6262-400A-8D3B-88558EA0C1AD/screen.css",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/FC6F43FC-9ACD-4DD7-8EC7-E2D8E401A4B7/screen.css",
+		"/Users/michael/www/raen/.gitignore",
+		"/Users/michael/www/nkaza/Gemfile",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/4A7AD396-9DAC-4370-90F6-D61D91E5E7C3/__media.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/FF4512AF-48E6-4603-B35B-2818CE51949A/style.css",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/8AF733EC-D02B-4ED5-8F4F-A64C656AA2D6/footer.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/8BE6B060-8782-4FC0-8423-73DBEE44FFEE/functions.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/A2188A8B-5D67-4679-9DE0-AF87C0C0CDAF/__media.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/4A0D40FF-8CA1-4623-9DF8-3BD40F39CC39/ezzarose.css",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/A20F79D7-9332-40F6-BF01-CD5D6BB6061A/fn_loopless.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/1ADC37B3-A1CE-4D6D-BA86-D9259BEB2329/header.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/11B57FA8-D139-40C6-9322-6443FCFA3073/page.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/09DC1E1F-A371-4A71-B600-4F86303E0331/_home.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/1B5535E0-8191-4CFB-9D0B-389A0CA8FE86/_home.php",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/0DAB4B37-07BA-455F-AE10-B5E9F99C2D86/index.html",
+		"/Users/michael/www/michaeldougherty.info/Gruntfile.js",
+		"/Users/michael/www/michaeldougherty.info/app/scripts/hello.coffee",
+		"/Users/michael/www/michaeldougherty.info/app/scripts/main.js",
+		"/Users/michael/www/michaeldougherty.info/app/scripts/app.coffee",
+		"/Users/michael/www/michaeldougherty.info/dist/scripts/12f0f7f7.main.js",
+		"/Users/michael/www/michaeldougherty.info/dist/scripts/hello.coffee",
+		"/Users/michael/www/unc-gis/TODO",
+		"/Users/michael/www/nkaza/lv11util/views.py",
+		"/Users/michael/www/nkaza/django-snippets/README.markdown",
+		"/Users/michael/www/nkaza/nkaza/settings.py",
+		"/Users/michael/Dropbox/www-resources/lv11/featured-projects.txt",
+		"/Users/michael/www/nkaza/nkaza/urls.py",
+		"/Users/michael/www/nkaza/notes/TODO.txt",
+		"/Users/michael/www/nkaza/assets/sass/main.scss",
+		"/Users/michael/www/nkaza/publications/models.py",
+		"/Users/michael/www/nkaza/projects/models.py",
+		"/Users/michael/www/nkaza/publications/templates/publications/index.jade",
+		"/Users/michael/www/nkaza/assets/sass/vars.scss",
+		"/Users/michael/www/nkaza/etc/kaza.bib",
+		"/Users/michael/www/nkaza/publications/templates/publications/partials/journal_article.html",
+		"/Users/michael/www/nkaza/publications/templates/publications/partials/book_chapter.html",
+		"/Users/michael/www/nkaza/venv/lib/python2.7/site-packages/django/contrib/sessions/backends/cached_db.py",
+		"/Users/michael/Library/Caches/Cleanup At Startup/Transmit/A302739B-3418-4C26-AA76-F2B269CE13D9/functions.php",
+		"/Users/michael/www/nkaza/venv/lib/python2.7/site-packages/wiki/plugins/notifications/templates/wiki/plugins/notifications/menubaritem.html",
+		"/Users/michael/www/nkaza/lv11util/templates/snippets/snippet.html",
+		"/Users/michael/www/nkaza/nkaza/templates/wiki/base.html",
+		"/Users/michael/www/nkaza/venv/lib/python2.7/site-packages/pyjade/ext/django/loader.py",
+		"/Users/michael/www/nkaza/venv/lib/python2.7/site-packages/wiki/templates/wiki/article.html",
+		"/Users/michael/www/nkaza/requirements.txt",
+		"/Users/michael/www/nkaza/nkaza/admin.py",
+		"/Users/michael/www/nkaza/snippets/models.py",
+		"/Users/michael/www/nkaza/venv/lib/python2.7/site-packages/admin_tools/urls.py",
+		"/Users/michael/www/nkaza/feeds/templatetags/feed_tags.py",
+		"/Users/michael/www/nkaza/courses/models.py",
+		"/Users/michael/www/nkaza/notes/notes_6-17.txt",
+		"/Users/michael/www/nkaza/notes/notes_6-26.txt",
+		"/Users/michael/www/nkaza/notes/notes_5-29.txt",
+		"/Users/michael/www/nkaza/projects/views.py",
+		"/Users/michael/www/nkaza/courses/views.py",
+		"/Users/michael/www/nkaza/courses/urls.py",
+		"/Users/michael/www/nkaza/snippets/templatetags/snippet_tags.py",
+		"/Users/michael/www/nkaza/lv11util/templates/snippets/snippet_image.html",
+		"/Users/michael/www/nkaza/notes_6-26.txt",
+		"/Users/michael/www/nkaza/courses/migrations/0001_initial.py",
+		"/Users/michael/www/nkaza/nkaza/templates/bio.jade",
+		"/Users/michael/www/nkaza/lv11util/templates/includes/admin_item_edit.html",
+		"/Users/michael/www/nkaza/feeds/templates/feeds/feed_aggregate.jade"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"-venv/",
+			"-env/",
+			"env/",
+			"-env/",
+			"env/",
+			"-env/",
+			"-/env",
+			"-./env",
+			"-env",
+			"",
+			"*.coffee",
+			"",
+			"venv/django/admindocs/*",
+			"venv/django/admindocs/**/*",
+			"venv/django/admindocs/**",
+			"venv/django/admindocs/",
+			"",
+			"*.sql",
+			"",
+			"*colorbox*",
+			"",
+			"*/models/*",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"jade",
+			"watch",
+			"jade",
+			"connect",
+			"server",
+			"defaul",
+			"cov",
+			"coffee:",
+			"compile:",
+			"html:",
+			"coffee:",
+			"jade:",
+			"compass",
+			"scripts/vendor/",
+			"scripts",
+			"/static",
+			"/static/vendor/",
+			"/static/css",
+			"loadnpm",
+			".coffee",
+			"coffee:",
+			"server:",
+			"combined-scripts",
+			"combine",
+			"coffee",
+			"js",
+			"jquery",
+			"script",
+			"Mapp",
+			"Settings",
+			"HTTP",
+			"teacher",
+			"www",
+			"ominvasion",
+			"invalid",
+			"command.html",
+			"grovebot_commands",
+			"packingslip_tags",
+			"\\{% load .+_tags",
+			"{% load .+_tags",
+			"templatetags",
+			"TestCommand",
+			"get_context_data",
+			"content",
+			"out",
+			"?P<",
+			":command",
+			"name",
+			"command_name",
+			"form_class",
+			"grovebot:",
+			"def as_view",
+			"cmd",
+			"BaseCommand",
+			"GrovebotCommand",
+			"run",
+			"GrovebotCommand",
+			"def dispatch",
+			"InputForm",
+			"form",
+			"Form",
+			"command_name",
+			"grovebot_module_path",
+			"ModelAdmin",
+			"base.html",
+			"navbar.html",
+			"staticmember",
+			"FORMAT_MODULE_PATH",
+			"_path",
+			"_dir",
+			"<=",
+			"<?",
+			"grove.unicorn.urls",
+			"grovebot",
+			"commando",
+			"get_context",
+			"$.colorbox",
+			"colorbox",
+			"$.fancybox",
+			"template_di",
+			"as_view",
+			"import views",
+			"from unicorn",
+			"Productivity",
+			"^b/",
+			"LOCAL_DEV",
+			"Mapp",
+			"MultiPolygonFeature",
+			"Feature.",
+			"column",
+			": righ",
+			"featured-container",
+			"project.image",
+			"image_main",
+			"WebsitePageView",
+			"the_",
+			"/elizabeth/images/",
+			"links",
+			"nth-",
+			"resources",
+			"^[^*\\n]*function subscribeEvents",
+			"^[^*]*function subscribeEvents",
+			"subscribeEvents",
+			"assets",
+			"-info",
+			"city",
+			"id",
+			"type",
+			"h2",
+			"span",
+			"bios",
+			"post_con",
+			"aligncenter",
+			"videos",
+			"/http",
+			"ifram",
+			"media",
+			"src=\"([^/h#])",
+			"href=\"([^/h#])",
+			"href",
+			"src",
+			"src=\"([^/h#])",
+			"href=\"([^/h#])",
+			"/htt",
+			"href=\"([^/h#])",
+			"href=\"([^/])",
+			"src=\"([^/])",
+			"src=\""
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"vendor/",
+			"scripts/vendor/",
+			"styles",
+			"SimpleTestCommand",
+			"GrovebotBaseCommand",
+			"grovebot",
+			"ILC",
+			"Feature2D",
+			"/wordpress/wp-content/themes/elizabeth/images/",
+			"href=\"/\\1",
+			"src=\"/\\1",
+			"MyModelAdmin",
+			"url('../fonts/",
+			"url('../fonts/\n",
+			";\n",
+			"svg",
+			"	",
+			"# ",
+			"#",
+			"CENSUS_TABLE",
+			"getRiskRange",
+			"Colormap",
+			"colormap",
+			"Feature.activeFeature",
+			"auth-button",
+			"contacts-list-wrapper",
+			"footer-pad-bottom",
+			"footer-pad-top",
+			"",
+			".excel-table",
+			"][$i]",
+			"14, 14, 8, 8, 14",
+			"14, 8, 8, 8, 14",
+			"14, 14, 14, 14, 14",
+			"PAINTING_IMG_PATH",
+			"processing-error",
+			"include 'includes/vimeo_player.html'",
+			"include 'includes/admin_list_control_panel.html'",
+			"include 'includes/admin_item_control_panel.html'",
+			".wraparound-banner"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 6,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "Gruntfile.js",
+					"settings":
+					{
+						"buffer_size": 10241,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9840,
+								9840
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 5300.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "app/_base.jade",
+					"settings":
+					{
+						"buffer_size": 2523,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2491,
+								2491
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Jade/Syntaxes/Jade.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 699.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "app/index.jade",
+					"settings":
+					{
+						"buffer_size": 5455,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5413,
+								5413
+							]
+						],
+						"settings":
+						{
+							"auto_name": "index.jade",
+							"syntax": "Packages/Jade/Syntaxes/Jade.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2815.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "app/styles/main.scss",
+					"settings":
+					{
+						"buffer_size": 70,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								69,
+								69
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Sass/Syntaxes/Sass.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "app/scripts/classes/feature2d.class.coffee",
+					"settings":
+					{
+						"buffer_size": 375,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								34,
+								34
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CoffeeScript/CoffeeScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "app/scripts/classes/feature.class.coffee",
+					"settings":
+					{
+						"buffer_size": 54,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CoffeeScript/CoffeeScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "app/scripts/app-init.coffee",
+					"settings":
+					{
+						"buffer_size": 3724,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3231,
+								3231
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CoffeeScript/CoffeeScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1782.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"ilc.su",
+				"ilc.sublime-project"
+			],
+			[
+				"ap-init",
+				"app/scripts/app-init.coffee"
+			],
+			[
+				"app-ini",
+				"app/scripts/app-init.coffee"
+			],
+			[
+				"feature.",
+				"app/scripts/classes/feature.class.coffee"
+			],
+			[
+				"feature2d",
+				"app/scripts/classes/feature2d.class.coffee"
+			],
+			[
+				"main.scss",
+				"app/styles/main.scss"
+			],
+			[
+				"base.ja",
+				"templates/_base.jade"
+			],
+			[
+				"app.coffe",
+				"coffee/app.coffee"
+			],
+			[
+				"cakefi",
+				"Cakefile"
+			],
+			[
+				"app.js",
+				"static/js/app.js"
+			],
+			[
+				"urls",
+				"mandalayoga/urls.py"
+			],
+			[
+				"base.",
+				"frontend/templates/base.html"
+			],
+			[
+				"rates",
+				"frontend/templates/rates.html"
+			],
+			[
+				"settin",
+				"mandalayoga/settings.py"
+			],
+			[
+				"db_",
+				"db_bootstrap.py"
+			],
+			[
+				"teacher",
+				"frontend/templates/teachers.html"
+			],
+			[
+				"inde",
+				"frontend/templates/index.html"
+			],
+			[
+				"mode",
+				"core/models.py"
+			],
+			[
+				"admin",
+				"mandalayoga/admin.py"
+			],
+			[
+				"views",
+				"frontend/views.py"
+			],
+			[
+				"settings",
+				"grove/settings/settings.py"
+			],
+			[
+				"bot/__ini",
+				"grove/unicorn/grovebot/__init__.py"
+			],
+			[
+				"command.ht",
+				"grove/unicorn/grovebot/templates/grovebot/command.html"
+			],
+			[
+				"internal/bas.h",
+				"grove/internal/base/templates/internal/base.html"
+			],
+			[
+				"unicorn/url",
+				"grove/unicorn/urls.py"
+			],
+			[
+				"url",
+				"grove/unicorn/grovebot/urls.py"
+			],
+			[
+				"grovebot/list",
+				"grove/unicorn/grovebot/templates/grovebot/list.html"
+			],
+			[
+				"commands",
+				"grove/unicorn/grovebot/commands.py"
+			],
+			[
+				"bot/url",
+				"grove/unicorn/grovebot/urls.py"
+			],
+			[
+				"grovebot/commands",
+				"grove/unicorn/grovebot/templates/grovebot/commands.list"
+			],
+			[
+				"test_comm",
+				"grove/unicorn/grovebot/commands/test_command.py"
+			],
+			[
+				"grovebot/__ini",
+				"grove/unicorn/grovebot/__init__.py"
+			],
+			[
+				"django/conf/urls",
+				"env/lib/python2.7/site-packages/django/conf/urls/__init__.py"
+			],
+			[
+				"conf/urls/default",
+				"env/lib/python2.7/site-packages/django/conf/urls/defaults.py"
+			],
+			[
+				"grobot/li",
+				"grove/unicorn/grovebot/templates/grovebot/list.html"
+			],
+			[
+				"grovebot_comm",
+				"grove/grovebot_commands/__init__.py"
+			],
+			[
+				"grovebot/view",
+				"grove/unicorn/grovebot/views.py"
+			],
+			[
+				"grovebot/mo",
+				"grove/unicorn/grovebot/models.py"
+			],
+			[
+				"grovebot/ur",
+				"grove/unicorn/grovebot/urls.py"
+			],
+			[
+				"navbar",
+				"grove/internal/base/templates/internal/includes/navbar.html"
+			],
+			[
+				"commando/model",
+				"grove/unicorn/commando/models.py"
+			],
+			[
+				"settings.py",
+				"grove/settings/settings.py"
+			],
+			[
+				"commando/view",
+				"grove/unicorn/commando/views.py"
+			],
+			[
+				"commando/",
+				"grove/unicorn/commando/models.py"
+			],
+			[
+				"setting",
+				"grove/settings/settings.py"
+			],
+			[
+				"index",
+				"nkaza/templates/index.jade"
+			],
+			[
+				"featu",
+				"nkaza/templates/featured_publication.jade"
+			],
+			[
+				"featured",
+				"nkaza/templates/featured_project.jade"
+			],
+			[
+				"main.j",
+				"assets/js/main.js"
+			],
+			[
+				"base.j",
+				"nkaza/templates/base.jade"
+			],
+			[
+				"main",
+				"assets/sass/main.scss"
+			],
+			[
+				"projects/mo",
+				"projects/models.py"
+			],
+			[
+				"work",
+				"project/website/templates/featured-work.jade"
+			],
+			[
+				"index.j",
+				"project/website/templates/index.jade"
+			],
+			[
+				"view",
+				"project/website/views.py"
+			],
+			[
+				"base",
+				"project/website/templates/base.jade"
+			],
+			[
+				"mainc",
+				"project/src/sass/main.scss"
+			],
+			[
+				"email",
+				"modules/system/models/system_emaillayout.php"
+			],
+			[
+				"confi",
+				"config.rb"
+			],
+			[
+				"base.scs",
+				"assets/sass/base.scss"
+			],
+			[
+				"gemfil",
+				"Gemfile"
+			],
+			[
+				"grun",
+				"Gruntfile.js"
+			],
+			[
+				"class",
+				"coffee/classes.coffee"
+			],
+			[
+				"todo",
+				"notes/TODO.md"
+			],
+			[
+				"app.coff",
+				"coffee/app.coffee"
+			],
+			[
+				"app-init",
+				"coffee/app-init.coffee"
+			],
+			[
+				"scss",
+				"sass/app.scss"
+			],
+			[
+				"app.jad",
+				"templates/app.jade"
+			],
+			[
+				"publi/mod",
+				"publications/models.py"
+			],
+			[
+				"publ/mode",
+				"publications/models.py"
+			],
+			[
+				"snipp",
+				"snippets/templatetags/snippet_tags.py"
+			],
+			[
+				"bio.j",
+				"nkaza/templates/bio.jade"
+			],
+			[
+				"main.scs",
+				"assets/sass/main.scss"
+			],
+			[
+				"book",
+				"publications/templates/publications/partials/book_chapter.html"
+			],
+			[
+				"journ",
+				"publications/templates/publications/partials/journal_article.html"
+			],
+			[
+				"kaza.",
+				"etc/kaza.bib"
+			],
+			[
+				"var",
+				"assets/sass/vars.scss"
+			],
+			[
+				"main.sc",
+				"assets/sass/main.scss"
+			],
+			[
+				"public/in",
+				"publications/templates/publications/index.jade"
+			],
+			[
+				"proje/mo",
+				"projects/models.py"
+			],
+			[
+				"pub/model",
+				"publications/models.py"
+			],
+			[
+				"model",
+				"publications/models.py"
+			],
+			[
+				"proje/in",
+				"projects/templates/projects/index.jade"
+			],
+			[
+				"menubaritem",
+				"venv/lib/python2.7/site-packages/wiki/plugins/notifications/templates/wiki/plugins/notifications/menubaritem.html"
+			],
+			[
+				"snippes/mo",
+				"snippets/models.py"
+			],
+			[
+				"nkazaad",
+				"nkaza/admin.py"
+			],
+			[
+				"requi",
+				"requirements.txt"
+			],
+			[
+				"pyjade/loader",
+				"venv/lib/python2.7/site-packages/pyjade/ext/django/loader.py"
+			],
+			[
+				"wiki/article",
+				"venv/lib/python2.7/site-packages/wiki/templates/wiki/article.html"
+			],
+			[
+				"wiki/base",
+				"nkaza/templates/wiki/base.html"
+			],
+			[
+				"mainscs",
+				"assets/sass/main.scss"
+			],
+			[
+				"project/templ",
+				"projects/templates/projects/index.jade"
+			],
+			[
+				"fee",
+				"feeds/templatetags/feed_tags.py"
+			],
+			[
+				"projec/mod",
+				"projects/models.py"
+			],
+			[
+				"courses/temp",
+				"courses/templates/courses/index.jade"
+			],
+			[
+				"proj/mod",
+				"projects/models.py"
+			],
+			[
+				"cour/mod",
+				"courses/models.py"
+			],
+			[
+				"cours/vie",
+				"courses/views.py"
+			],
+			[
+				"project/vie",
+				"projects/views.py"
+			],
+			[
+				"snippet_im",
+				"lv11util/templates/snippets/snippet_image.html"
+			],
+			[
+				"snippet/mo",
+				"snippets/models.py"
+			],
+			[
+				"courses/migr",
+				"courses/migrations/0001_initial.py"
+			],
+			[
+				"course/vie",
+				"courses/views.py"
+			],
+			[
+				"courses/url",
+				"courses/urls.py"
+			],
+			[
+				"courses/inde",
+				"courses/templates/courses/index.jade"
+			],
+			[
+				"projects/in",
+				"projects/templates/projects/index.jade"
+			],
+			[
+				"proj/mo",
+				"projects/models.py"
+			],
+			[
+				"courses/mo",
+				"courses/models.py"
+			],
+			[
+				"admin_item_",
+				"lv11util/templates/includes/admin_item_edit.html"
+			],
+			[
+				"bio",
+				"nkaza/templates/bio.jade"
+			],
+			[
+				"templ/snipp",
+				"lv11util/templates/snippets/snippet.html"
+			],
+			[
+				"snippets/mo",
+				"snippets/models.py"
+			],
+			[
+				"models",
+				"projects/models.py"
+			],
+			[
+				"pub/ind",
+				"publications/templates/publications/index.jade"
+			],
+			[
+				"publicati/in",
+				"publications/templates/publications/index.jade"
+			],
+			[
+				"feed",
+				"feeds/templatetags/feed_tags.py"
+			],
+			[
+				"feed_ag",
+				"feeds/templates/feeds/feed_aggregate.jade"
+			],
+			[
+				"swatch",
+				"coffee/choropleth-swatches.coffee"
+			],
+			[
+				"swa",
+				"coffee/choropleth-swatches.coffee"
+			],
+			[
+				"coffee",
+				"coffee/classes.coffee"
+			],
+			[
+				"app.scss",
+				"sass/app.scss"
+			],
+			[
+				"app.jade",
+				"templates/app.jade"
+			],
+			[
+				"notes",
+				"notes_6-26.txt"
+			],
+			[
+				"no",
+				"notes_6-17.txt"
+			],
+			[
+				"sitewiki/",
+				"venv/lib/python2.7/site-packages/wiki/urls.py"
+			],
+			[
+				"base.scss",
+				"assets/sass/base.scss"
+			],
+			[
+				"admin.scs",
+				"assets/sass/admin.scss"
+			],
+			[
+				"conta",
+				"nkaza/templates/contact.jade"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 233.0,
+	"status_bar_visible": true
+}

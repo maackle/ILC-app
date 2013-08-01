@@ -1,0 +1,9 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/michael/www/ilc",
+			"folder_exclude_patterns": [".tmp"]
+		}
+	]
+}

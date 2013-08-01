@@ -1,0 +1,527 @@
+@import "compass/css3";
+
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700);
+
+body {
+	font-size: 13px;
+	font-family: 'Roboto Slab', serif;
+}
+
+br.clear {
+	clear: both;
+}
+
+.align-center {
+	text-align: center;
+}
+
+h1, h2, h3, h4 {
+	font-weight: 300;
+}
+
+h1 { font-size: 2em; margin: 0.5em auto; }
+h2 { font-size: 1.67em; margin: 0.25em auto; }
+h3 { font-size: 1.5em; margin: 0.25em auto; }
+h4 { font-size: 1.25em; margin: 0.25em auto; }
+
+
+div#leaflet-map {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	width: 100%;
+
+	.leaflet-overlay-pane path {
+		@include transition-property(fill);
+		@include transition-duration(777ms);
+		&.fast-transition {
+			@include transition-duration(10ms);
+
+		}
+	}
+}
+
+$panel-padding: 10px;
+$panel-right-width: 200px;
+$attribution-height: 20px;
+
+$trends-color-county-industry: rgb(251,128,114);
+$trends-color-state-industry: rgb(100, 222, 60);
+$trends-color-state-manufacturing: #222;
+
+@mixin panel {
+	background: rgba(255, 255, 255, 0.45);
+	.expanded, &.padded {
+		padding: 10px;
+	}
+	// @include border-radius(10px);
+	border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.panel-container {
+	z-index: 10;
+	text-align: left;
+
+	.panel {
+		position: relative;
+		float: left;
+		clear: both;
+	}
+
+	.main-control-container {
+		@include panel;
+		font-size: 13px;
+		position: absolute;
+		// height: 100%;
+		// width: 150px;
+		left: $panel-padding;
+		top: $panel-padding;
+
+		select {
+			width: auto;
+		}
+
+		section {
+			margin: 10px;
+			.btn-group {
+				display: block;
+				.btn {
+					width: 100%;
+				}
+			}
+		}
+
+		.risk-select, .industry-select {
+
+		}
+
+		.chzn-container {
+			width: 100% !important;
+		}
+
+
+
+
+	}
+}
+
+
+.togglable-panel {
+	@mixin link_common {
+		&:hover {
+			text-decoration: none;
+			background: #333;
+			color: #fff;
+		}
+	}
+	a.collapse {
+		position: absolute;
+		top: 2px;
+		right: 2px;
+		display: block;
+		font-size: 20px;
+		height: 20px;
+		width: 20px;
+		line-height: 20px;
+		margin: 0;
+		padding: 0;
+		font-weight: bold;
+		color: inherit;
+		text-align: center;
+
+		&:hover {
+			text-decoration: none;
+			background: #333;
+			color: #fff;
+		}
+	}
+	a.expand {
+		display: block;
+		padding: 10px;
+		&:hover {
+			text-decoration: none;
+			background: #fff;
+		}
+	}
+	.collapsed {
+		display: none;
+	}
+}
+
+
+#graphs {
+	position: absolute;
+	@include panel;
+	bottom: $panel-padding + $attribution-height;
+	right: $panel-padding;
+	// height: $panel-right-width;
+	text-align: center;
+
+	.tick line {
+		stroke: #222;
+	}
+
+	.graph-title {
+		font-size: 1.5em;
+		line-height: 1.5em;
+		margin-bottom: 5px;
+	}
+
+	.block {
+		display: inline-block;
+
+		&.pies {
+			text-align: left;
+			vertical-align: bottom;
+		}
+
+		&.right {
+			vertical-align: bottom;
+
+		}
+	}
+
+	#risk-histogram {
+		.bar {
+			rect {
+				&.active {
+
+				}
+			}
+		}
+
+		.domain {
+			stroke-width: 1.3px;
+			stroke: #222;
+			fill: none;
+		}
+	}
+
+	#naics-trends-graph {
+		display: none;
+		// width: 250px;
+		.axis {
+			path {
+				fill: none;
+				stroke: #000;
+				shape-rendering: crispEdges;
+			}
+			text {
+				font-size: 12px;
+			}
+		}
+		.info {
+			font-size: 0.8em;
+			line-height: 1.1em;
+
+		}
+		.legend {
+
+			.item {
+				text-align: center;
+				display: inline-block;
+				margin: 5px;
+				&.ind-county { 
+					color: $trends-color-county-industry;
+					.line { background: $trends-color-county-industry; }
+				}
+				&.ind-state {
+					color: $trends-color-state-industry;
+					.line { background: $trends-color-state-industry; }
+				}
+				&.mfg-state { 
+					color: $trends-color-state-manufacturing;
+					.line { background: $trends-color-state-manufacturing; }
+				}
+
+				.line {
+					width: 90%;
+					height: 2px;
+					margin: 0 auto;
+				}
+			}
+		}
+	}
+	
+	.pie {
+		clear: both;
+		display: block;
+		padding: 10px;
+
+		&:first-child {
+			// border-bottom: 1px solid #ccc;
+		}
+
+		ul.legend {
+			margin: auto;
+			vertical-align: middle;
+			float: left;
+			padding-left: 10px;
+			li {
+				.label {
+					display: inline;
+				}
+			}
+		}
+
+		.graph {
+			float: left;
+			vertical-align: middle;
+			border: 1px solid #666;
+		}
+
+	}
+
+	#race-pie {
+		display: none;
+		.graph {
+
+		}
+	}
+
+	#occupation-pie {
+		display: none;
+		.graph {
+
+		}
+	}
+}
+
+#debug-stats {
+	display: none;
+	position: absolute;
+	@include panel;
+	bottom: $panel-padding + $attribution-height + 300px;
+	right: $panel-padding;
+	width: $panel-right-width;
+	height: $panel-right-width;
+	text-align: center;
+	
+	#risk-histogram {
+
+	}
+}
+
+// global legend style
+ul.legend {
+	text-align: left;
+	@mixin kids($l, $margin) {
+		.color {
+			@include border-radius(4px);
+			display: inline-block;
+			vertical-align: middle;
+			width: $l;
+			height: $l;
+			margin: $margin;
+			border: 1px solid #444;
+			&.no-fill {
+				border-width: 2px;
+				width: $l - 2;
+				height: $l - 2;
+			}
+		}
+		.label {
+			display: inline-block;
+			background: inherit;
+			color: inherit;
+			font-weight: inherit;
+			padding: inherit;
+		}
+	}
+
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	
+	@include kids(16px, 5px);
+
+	&.small {
+		@include kids(8px, 0px);
+		li {
+			line-height: 1.2em;
+			margin-right: 5px;
+			.color {
+				border: 0;
+			}
+		}
+	}
+}
+
+#legends-and-colormaps {
+	.collapsed {
+		@include panel;
+		display: none;
+		position: absolute;
+		top: $panel-padding;
+		right: $panel-padding;
+	}
+}
+
+#legend {
+
+	@include panel;
+	position: absolute;
+	top: $panel-padding;
+	right: $panel-padding;
+	width: $panel-right-width;
+
+	h3 {
+		margin: 0;
+		padding: 10px;
+	}
+
+	.raster-legends {
+		img.raster-legend {
+			display: none;
+		}
+	}
+
+	.other-legends {
+		display: none;
+	}
+
+	.legend-container.industrial-parcels {
+		display: block;
+	}
+
+	.legend-container {
+		display: none;
+
+		&.brownfields {
+			ul.legend {
+				li.color {
+					@include border-radius(20px);
+					$l: 10px;
+					width: $l;
+					height: $l;
+				}
+			}
+		}
+	}
+}
+
+#value-picker {
+
+}
+
+#colormap-picker-container {
+
+}
+
+#colormap-picker {
+
+	@include panel;
+	display: none;
+	position: absolute;
+	top: $panel-padding;
+	right: $panel-right-width + $panel-padding * 4;
+	.toggler {
+		padding: 10px;
+		box-shadow: 0 1px 7px rgba(0,0,0,0.4);
+		background: #f8f8f8;
+		@include border-radius(8px);
+		cursor: pointer;
+	}
+	.content {
+		// display: none;
+	}
+
+	select {
+		display: inline-block;
+	}
+
+	select.num-bins {
+		width: 4em;
+	}
+
+	select.segmentation {
+		width: 7em;
+	}
+
+
+	ul.colormap-preview {
+		$width: 16px;
+		display: inline-block;
+		list-style: none;
+		margin: 2px;
+		padding: 5px;
+		border: 2px solid transparent;
+		@include border-radius(5px);
+		cursor: pointer;
+
+		&.current {
+			background: #f8f8f8;
+			border: 2px solid #333;
+		}
+
+		.color {
+			$l: $width;
+			width: $l;
+			height: $l;
+			margin: 0;
+			border: 1px solid #444;
+		}
+	}
+}
+
+#industry-picker {
+	margin: 8px 0 15px;
+
+	.chzn-drop {
+		width: 300px;
+	}
+	.industry-select {
+
+		.primary {
+			// display: none;
+			font-weight: bold;
+		}
+	}
+}
+
+
+#raster-picker {
+
+	label {
+		display: block;
+		background: rgba(255, 255, 255, 0.5);
+		padding: 4px;
+
+		input {
+			padding: 4px;
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		span {
+			display: inline-block;
+		}
+	}
+}
+
+#address-picker {
+	.address {
+		margin-bottom: 0;
+		vertical-align: middle;
+		width: 120px;
+		@include transition(width 300ms);
+		&:focus {
+			width: 333px;
+		}
+	}
+}
+
+.picker-content-inner {
+	width: 300px;
+}
+
+#toc {
+	// @include panel;
+}
+
+.brownfield-divicon {
+	@include border-radius(50%);
+	background: brown;
+	// width + height are set thru JS
+}

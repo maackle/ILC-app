@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<TileMap version="1.0.0" tilemapservice="http://tms.osgeo.org/1.0.0">
+	  <Title>CCWComposite-13.tif</Title>
+	  <Abstract></Abstract>
+	  <SRS>EPSG:900913</SRS>
+	  <BoundingBox minx="34.98049461381645" miny="-81.08529876048918" maxx="35.42482748713550" maxy="-80.56135979798624"/>
+	  <Origin x="34.98049461381645" y="-81.08529876048918"/>
+	  <TileFormat width="256" height="256" mime-type="image/png" extension="png"/>
+	  <TileSets profile="mercator">
+	    <TileSet href="7" units-per-pixel="1222.99245234375010" order="7"/>
+	    <TileSet href="8" units-per-pixel="611.49622617187504" order="8"/>
+	    <TileSet href="9" units-per-pixel="305.74811308593752" order="9"/>
+	    <TileSet href="10" units-per-pixel="152.87405654296876" order="10"/>
+	    <TileSet href="11" units-per-pixel="76.43702827148438" order="11"/>
+	    <TileSet href="12" units-per-pixel="38.21851413574219" order="12"/>
+	    <TileSet href="13" units-per-pixel="19.10925706787110" order="13"/>
+	  </TileSets>
+	</TileMap>
+	

@@ -293,12 +293,12 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
+            'jade',
             'coffee:dist',
             'createDefaultTemplate',
             'jst',
             'neuter:app',
             'compass:server',
-            'jade',
             'connect:livereload',
             'open',
             'watch'
@@ -307,6 +307,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'clean:server',
+        'jade',
         'coffee',
         'createDefaultTemplate',
         'jst',
@@ -318,11 +319,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
+        'jade',
         'coffee',
         'createDefaultTemplate',
         'jst',
         'compass:dist',
-        'jade',
         'useminPrepare',
         'neuter:app',
         'imagemin',
@@ -336,6 +337,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('default', [
+        'jade',
         'jshint',
         'test',
         'build'
