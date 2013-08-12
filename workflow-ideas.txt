@@ -1,0 +1,11 @@
+
+
+NATIONWIDE INPUT (only one of each):
+- (SHP) Census tracts
+- (SHP) Brownfield points (and any other arbitrary vector layers we might want to add)
+- (SHP) Converted and Industrial parcels
+- (CSV) NAICS trends data
+
+LOCAL INPUT (one for each region):
+- Region geometry
+- Raster layers
