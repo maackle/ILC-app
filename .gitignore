@@ -2,5 +2,6 @@
 venv/
 rawdata/
 *.pyc
+*.sqlite*
 *.sublime-project
 *.sublime-workspace
