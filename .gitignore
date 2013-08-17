@@ -1,4 +1,6 @@
 .DS_Store
 venv/
+rawdata/
+*.pyc
 *.sublime-project
 *.sublime-workspace
