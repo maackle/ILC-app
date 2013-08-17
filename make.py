@@ -14,12 +14,16 @@ def lazy_mkdir(path):
 def load_global_shapefiles():
 
 	for name, path in global_data.items():
-		os.system("spatialite .loadshp {shp} {name} {encoding} {srid} {geom_column_name} ".format(
+		line = ".loadshp {shp} {name} {encoding} {srid} {geom_column_name}".format(
 			name=name,
 			shp=path,
 			encoding=settings.SPATIALITE_ENCODING,
 			srid=settings.SPATIALITE_SRID,
 			geom_column_name=settings.SPATIALITE_GEOMETRY_COLUMN_NAME,
+		)
+		os.system("echo \"{line}\" | spatialite {file}".format(
+			line=line,
+			file=settings.SPATIALITE_DB_FILE,
 		))
 
 def build():
