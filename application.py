@@ -15,18 +15,6 @@ app = Flask(__name__)
 
 
 
-def load_global_shapefiles():
-	pass
-
-def load_local_shapefiles():
-	pass
-
-
-
-
-
-
-
 def connect_engine():
 
 	# print "connecting to postgres server... ",

@@ -1,15 +1,26 @@
 import os
 
 from conf import settings
-from util import load_shapefile
+from util import *
 
-global_data = {
-    # 'brownfields': 'brownfields/GEODATA_Featureclass_MAR2013',
-    'census_tracts': 'census_tracts/Mecklenburg_CensusTracts',
-    'demography': 'demography/Occupation_race',
+
+global_datasets = {
+    # settings.BROWNFIELDS_TABLE: 'brownfields/GEODATA_Featureclass_MAR2013',
+    # 'census_tracts': {
+    #     'table': settings.CENSUS_TABLE,
+    #     'path': 'census_tracts/Mecklenburg_CensusTracts',
+    #     'srid': settings.GEOGRAPHIC_SRID,
+    # },
+    'demography': {
+        'table': settings.DEMOGRAPHY_TABLE,
+        'path': 'demography/demography_meck_and_cook',
+        'srid': settings.EQUAL_AREA_SRID,
+    },
 }
 
 class ProjectDefinition(object):
+
+    SRID=settings.GEOGRAPHIC_SRID
 
     def __unicode__(self):
         return '<ProjectDefinition "{0}">'.format(self.title)
@@ -32,16 +43,32 @@ class ProjectDefinition(object):
     def app_data_dir(self, path=''):
         return os.path.join(settings.APP_DATA_DIR, self.name, path)
 
+    @property
+    def raw_industrial_table(self):
+        return '_R_' + self.name + '_industrial'
+
+    @property
+    def raw_converted_table(self):
+        return '_R_' + self.name + '_converted'
+
+    @property
+    def occupation_table(self):
+        return self.name + '_occupation'
+
+    @property
+    def race_table(self):
+        return self.name + '_race'
+
     def load_shapefiles(self):
-        load_shapefile('industrial_parcels', self.industrial_parcels_shp, self.name + '_')
-        load_shapefile('converted_parcels', self.converted_parcels_shp, self.name + '_')
+        load_shapefile(self.raw_industrial_table, self.industrial_parcels_shp, self.SRID)
+        load_shapefile(self.raw_converted_table, self.converted_parcels_shp, self.SRID)
 
 
 meck = ProjectDefinition(
     name='meck',
     title='Mecklenburg County, NC',
-    industrial_parcels_shp='still_industrial/still_industrial',
-    converted_parcels_shp='alreadyconverted/alreadyconverted',
+    industrial_parcels_shp='still_industrial/meck-4326',
+    converted_parcels_shp='alreadyconverted/meck-4326',
     raster_layers=(
         {
             'name': 'corridors-wedges',
