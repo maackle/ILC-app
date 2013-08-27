@@ -34,3 +34,11 @@ def load_shapefile(name, path, srid, prefix=''):
     #     table=table,
     #     geom_column_name=settings.SPATIALITE_GEOMETRY_COLUMN_NAME,
     # ))
+
+
+
+def db_connect():
+    from sqlalchemy import create_engine
+    engine = create_engine('sqlite://%s' % (settings.SPATIALITE_DB_FILE,))
+    conn = engine.connect()
+    return engine

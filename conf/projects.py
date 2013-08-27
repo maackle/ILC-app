@@ -13,7 +13,7 @@ global_datasets = {
     # },
     'demography': {
         'table': settings.DEMOGRAPHY_TABLE,
-        'path': 'demography/demography_meck_and_cook',
+        'path': 'nationaldata/TRACT_ACS_07_11-2163',
         'srid': settings.EQUAL_AREA_SRID,
     },
 }

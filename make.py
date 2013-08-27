@@ -7,14 +7,7 @@ from subprocess import call
 from conf import settings
 from conf.projects import projects, global_datasets
 from util import *
-from sqlalchemy import create_engine
 import sqlite3
-
-
-def db_connect():
-    engine = create_engine('sqlite://%s' % (settings.SPATIALITE_DB_FILE,))
-    conn = engine.connect()
-    return engine
 
 
 def interpolate_sql(script, **kwargs):
@@ -25,7 +18,6 @@ def interpolate_sql(script, **kwargs):
 def run_spatialite_script(conn, script_template, driver='sqlite', **kwargs):
     assert driver == 'sqlite', "Unsupported driver: %s" % driver
     script = interpolate_sql(script_template, **kwargs)
-    print script
     fd, path = tempfile.mkstemp()
     with open(path, 'w') as f:
         f.write(script)
