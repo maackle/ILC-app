@@ -1,2 +1,6 @@
+Shapely==1.2.18
+geojson==1.0.1
+pyspatialite==3.0.1
 pysqlite==2.6.3
+simplejson==3.3.0
 wsgiref==0.1.2

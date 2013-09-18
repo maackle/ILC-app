@@ -37,8 +37,8 @@ def load_shapefile(name, path, srid, prefix=''):
 
 
 
-def db_connect():
-    from sqlalchemy import create_engine
-    engine = create_engine('sqlite://%s' % (settings.SPATIALITE_DB_FILE,))
-    conn = engine.connect()
-    return engine
+# def db_connect():
+#     from sqlalchemy import create_engine
+#     engine = create_engine('sqlite://%s' % (settings.SPATIALITE_DB_FILE,))
+#     conn = engine.connect()
+#     return engine

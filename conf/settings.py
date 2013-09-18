@@ -14,5 +14,28 @@ SPATIALITE_PK_NAME = 'GID'
 APP_PK_NAME = 'gid'
 
 BROWNFIELDS_TABLE = '_G_brownfields'
-CENSUS_TABLE = '_G_census_tracts'
+COUNTIES_TABLE = '_G_counties'
 DEMOGRAPHY_TABLE = '_G_demography'
+
+USE_DEMOGRAPHY = False  # I don't care about demography right now
+FEATURE_CHUNK_SIZE = 1000  # How many features go into a single geojson file?
+
+
+global_datasets = {
+    # settings.BROWNFIELDS_TABLE: 'brownfields/GEODATA_Featureclass_MAR2013',
+    # 'census_tracts': {
+    #     'table': settings.CENSUS_TABLE,
+    #     'path': 'census_tracts/Mecklenburg_CensusTracts',
+    #     'srid': settings.GEOGRAPHIC_SRID,
+    # },
+    'counties': {
+        'table': COUNTIES_TABLE,
+        'path': 'nationaldata/Counties',
+        'srid': GEOGRAPHIC_SRID,
+    },
+    'demography': {
+        'table': DEMOGRAPHY_TABLE,
+        'path': 'nationaldata/TRACT_ACS_07_11-2163',
+        'srid': EQUAL_AREA_SRID,
+    },
+}

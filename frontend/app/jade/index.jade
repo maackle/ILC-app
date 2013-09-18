@@ -1,0 +1,184 @@
+extends _base
+
+block styles
+	link(href="styles/app.css", type="text/css", rel="stylesheet")
+	link(href="scripts/vendor/chosen/chosen.css", type="text/css", rel="stylesheet")
+	link(href="bower_components/leaflet/dist/leaflet.css", type="text/css", rel="stylesheet")
+	// if lt IE8
+		link(href="bower_components/leaflet/dist/leaflet.ie.css", type="text/css", rel="stylesheet")
+
+block scripts
+	script(src="https://maps.googleapis.com/maps/api/js?key=&sensor=true")
+	script(src="scripts/vendor/chosen/chosen.jquery.js")
+	script(src="bower_components/leaflet/dist/leaflet-src.js")
+	script(src="scripts/vendor/d3.v3/d3.v3.js")
+
+	script(src="scripts/main.js")
+	//- script(src="scripts/http.js")
+	//- script(src="scripts/settings.js")
+	//- script(src="scripts/choropleth-swatches.js")
+	//- script(src="scripts/classes/barchart.js")
+	//- script(src="scripts/classes/colormap.js")
+	//- script(src="scripts/classes/polygon.js")
+	//- script(src="scripts/classes/feature.js")
+	//- script(src="scripts/classes/feature2d.js")
+	//- script(src="scripts/classes/industrialpolygon.js")
+	//- script(src="scripts/classes/convertedpolygon.js")
+	//- script(src="scripts/classes/multipolygoncollection.js")
+	//- script(src="scripts/ILC.js")
+	//- script(src="scripts/app-init.js")
+
+
+block body
+	//- div.controls
+		//- a.reset(href="#") reset
+
+	.container
+		#leaflet-map
+
+		.panel-container
+			#legends-and-colormaps.togglable-panel
+
+				.collapsed
+					a.expand(href="#")
+						i.icon-list
+
+				.expanded
+					#colormap-picker.padded
+						.content
+							h3 colormaps
+							| levels:
+							select.num-bins
+								option(value=3) 3
+								option(value=4) 4
+								option(value=5, selected) 5
+								option(value=6) 6
+							br
+							| splits:
+							select.segmentation
+								option(value="linear", selected) linear
+								option(value="quantile") quantile
+							.colormaps
+
+					#legend.padded
+						//- h3.align-center legend
+
+						.legend-container.industrial-parcels.active
+
+							.main-legend
+								h4.title Probability of conversion<br/>from Industrial
+								.colormap
+								.align-center
+									button(data-toggle="button", class="btn btn-mini toggle-colormaps") Show colormap picker
+						.legend-container.converted-parcels
+							h4.title Already converted
+							ul.legend
+						.other-legends
+							h4.title Other
+							.legend-container.brownfields
+								ul.legend
+									li.color(style="background: brown")
+									li.label Brownfields
+						.raster-legends
+							img.raster-legend(src="/static/tiles/corridors-wedges/legend.png", data-id="corridors-wedges")
+							img.raster-legend(src="/static/tiles/planned-improvements/legend.png", data-id="planned-improvements")
+
+						a.collapse(href="#") &times;
+
+
+		.panel-container
+			#graphs.togglable-panel
+				.expanded
+					.block.pies
+						#race-pie.pie
+							.graph-title Neighbors
+							.graph
+							ul.legend.small
+								//- auto
+						#occupation-pie.block.pie
+							.graph-title Occupation
+							.graph
+							ul.legend.small
+								//- auto
+					.block.right
+						#naics-trends-graph
+							.info
+								.graph-title Employment Trends
+								.naics-title 
+								//- auto
+								a.naics-filter-select(href="") (set as industry filter)
+								.legend
+									.item.ind-county
+										.line
+										|Meck. 
+										span.naics
+									.item.ind-state
+										.line
+										| NC 
+										span.naics
+									.item.mfg-state 
+										.line
+										| NC Mfg.
+						#risk-histogram
+							.graph-title Risk Distribution
+					a.collapse(href="#") &times;
+				.collapsed
+					a.expand(href="#")
+						i.icon-tasks
+		
+
+		.panel-container	
+			#debug-stats.off
+				
+		.panel-container
+			.main-control-container.togglable-panel
+				.expanded
+					h2 controls
+
+					h4 Probability
+					section#value-picker
+						select.risk-select
+							option(value="risk_main", selected) Any
+							option(value="risk_res") Residential
+							option(value="risk_com") Commercial
+
+					h4 Vector Layers
+					section#vector-picker
+						div.vector-choices.btn-group.btn-group-vertical(data-toggle="buttons-checkbox")
+							button.btn.btn-small.active(data-id="industrial-parcels") Industrial Parcels
+							button.btn.btn-small(data-id="converted-parcels") Converted Parcels
+							button.btn.btn-small(data-id="brownfields") Brownfields
+
+					h4 Raster Layers
+					section#raster-picker
+						div.raster-choices.btn-group.btn-group-vertical(data-toggle="buttons-radio")
+							button.btn.btn-small(data-id="", class="active") None
+							button.btn.btn-small(data-id="corridors-wedges", data-fmt="png") Corridors Wedges
+							button.btn.btn-small(data-id="planned-improvements", data-fmt="jpg") Planned Improvements
+
+					h4 Industry Filter
+					section#industry-picker
+						select.industry-select(data-placeholder="Filter by Industry")
+							option(value="") 
+						//- label
+						//- 	input(type="radio", name="raster-name", value="") 
+						//- 	span None
+						//- label 
+						//- 	input(type="radio", name="raster-name", value="corridors-wedges")
+						//- 	span Corridors Wedges
+						//- label
+						//- 	input(type="radio", name="raster-name", value="planned-improvements")
+						//- 	span Planned Improvements
+
+					h4 Zoom to Address
+					section#address-picker
+						form.address-form
+							input.address(type="text", placeholder="Enter an address")
+							input(type="submit", value="Go")
+
+					a.collapse(href="#") &times;
+				.collapsed
+					a.expand(href="#")
+						i.icon-th-large
+
+	#control-panels(style="display: none;")

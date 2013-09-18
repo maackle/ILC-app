@@ -4,20 +4,6 @@ from conf import settings
 from util import *
 
 
-global_datasets = {
-    # settings.BROWNFIELDS_TABLE: 'brownfields/GEODATA_Featureclass_MAR2013',
-    # 'census_tracts': {
-    #     'table': settings.CENSUS_TABLE,
-    #     'path': 'census_tracts/Mecklenburg_CensusTracts',
-    #     'srid': settings.GEOGRAPHIC_SRID,
-    # },
-    'demography': {
-        'table': settings.DEMOGRAPHY_TABLE,
-        'path': 'nationaldata/TRACT_ACS_07_11-2163',
-        'srid': settings.EQUAL_AREA_SRID,
-    },
-}
-
 class ProjectDefinition(object):
 
     SRID=settings.GEOGRAPHIC_SRID
@@ -28,20 +14,23 @@ class ProjectDefinition(object):
     def __str__(self):
         return unicode(self)
 
-    def __init__(self, name, title, industrial_parcels_shp, converted_parcels_shp, raster_layers):
+    def __init__(self, name, title, industrial_parcels, demography, converted_parcels_shapefile, raster_layers, fips5_list):
         self.name = name
         self.title = title
-        self.industrial_parcels_shp = industrial_parcels_shp
-        self.converted_parcels_shp = converted_parcels_shp
+        self.demography = demography
+        self.industrial_parcels = industrial_parcels
+        self.converted_parcels_shapefile = converted_parcels_shapefile
         self.raster_layers = raster_layers
+        self.fips5_list = fips5_list
 
-    @property
     def raw_data_dir(self, path=''):
         return os.path.join(settings.RAW_DATA_DIR, self.name, path)
 
-    @property
     def app_data_dir(self, path=''):
         return os.path.join(settings.APP_DATA_DIR, self.name, path)
+
+    # def probabilty_names(self):
+    #     return [p['name'] for p in self.industrial_parcels['probability_categories']]
 
     @property
     def raw_industrial_table(self):
@@ -59,16 +48,86 @@ class ProjectDefinition(object):
     def race_table(self):
         return self.name + '_race'
 
-    def load_shapefiles(self):
-        load_shapefile(self.raw_industrial_table, self.industrial_parcels_shp, self.SRID)
-        load_shapefile(self.raw_converted_table, self.converted_parcels_shp, self.SRID)
+    @property
+    def industrial_table(self):
+        return self.name + '_industrial'
 
+    @property
+    def raw_demography_table(self):
+        return '_R_' + self.name + '_demography'
+
+    def load_shapefiles(self):
+        load_shapefile(self.raw_industrial_table, self.industrial_parcels['shapefile'], self.SRID)
+        load_shapefile(self.raw_converted_table, self.converted_parcels_shapefile, self.SRID)
+
+demography_options = {
+    'race_categories': (
+        {
+            'name': 'white',
+            'title': 'White',
+        },
+        {
+            'name': 'black',
+            'title': 'Black',
+        },
+        {
+            'name': 'asian',
+            'title': 'Asian',
+        },
+        {
+            'name': 'multi',
+            'title': 'Multiple',
+        },
+    ),
+    'occupation_categories': (
+        {
+            'name': 'manufacturing',
+            'title': 'Manufacturing',
+        },
+        {
+            'name': 'construction',
+            'title': 'Construction',
+        },
+        {
+            'name': 'management',
+            'title': 'Management',
+        },
+        {
+            'name': 'service',
+            'title': 'Service',
+        },
+        {
+            'name': 'office',
+            'title': 'Office',
+        },
+    ),
+}
 
 meck = ProjectDefinition(
     name='meck',
-    title='Mecklenburg County, NC',
-    industrial_parcels_shp='still_industrial/meck-4326',
-    converted_parcels_shp='alreadyconverted/meck-4326',
+    title='Mecklenburg County, North Carolina',
+    industrial_parcels={
+        'shapefile': 'still_industrial/meck-4326',
+        'probability_categories': (
+            {
+                'rawname': 'pcnv_l',
+                'name': 'risk_main',
+                'title': 'Probability of Conversion to Industrial'
+            },
+            {
+                'rawname': 'pcnv_r',
+                'name': 'risk_res',
+                'title': 'Probability of Conversion to Industrial from Residential'
+            },
+            {
+                'rawname': 'pcnv_c',
+                'name': 'risk_com',
+                'title': 'Probability of Conversion to Industrial from Commercial'
+            },
+        ),
+    },
+    demography=demography_options,
+    converted_parcels_shapefile='alreadyconverted/meck-4326',
     raster_layers=(
         {
             'name': 'corridors-wedges',
@@ -79,10 +138,31 @@ meck = ProjectDefinition(
         },
         # TODO ...
     ),
+    fips5_list=('51117', '37119')
+)
+
+
+cook = ProjectDefinition(
+    name='cook',
+    title='Cook County, Illinois',
+    industrial_parcels={
+        'shapefile': 'cook_rawdata/cook_still_industrial',
+        'probability_categories': (
+            {
+                'rawname': 'PCnv_',
+                'name': 'risk_main',
+                'title': 'Probability of Conversion to Industrial'
+            },
+        ),
+    },
+    demography=demography_options,
+    converted_parcels_shapefile='cook_rawdata/cook_alreadyconverted',
+    raster_layers=(),
+    fips5_list=('17031',)
 )
 
 projects = set((
-    meck,
+    meck, cook,
 ))
 
 # meck = {

@@ -1,0 +1,25 @@
+changeset:   475:a0db41d7d684
+tag:         tip
+parent:      425:47d80a2f7f60
+user:        Oskari Timperi <oskari.timperi@iki.fi>
+date:        Tue Nov 27 12:27:22 2012 +0200
+summary:     Fix 3.0.1 build after libspatialite introduced version 4.0
+
+diff -r 47d80a2f7f60 -r a0db41d7d684 setup.py
+--- a/setup.py	Wed Jan 11 14:56:10 2012 -0800
++++ b/setup.py	Tue Nov 27 12:27:22 2012 +0200
+@@ -92,10 +92,10 @@
+     print "Downloading amalgation."
+ 
+     # find out what's current amalgamation ZIP file
+-    download_page = urllib.urlopen("https://www.gaia-gis.it/fossil/libspatialite/index").read()
++    download_page = urllib.urlopen("http://www.gaia-gis.it/gaia-sins/libspatialite-sources/").read()
+     pattern = re.compile("(libspatialite-amalgamation.*?\.zip)")
+-    download_file = pattern.findall(download_page)[0]
+-    amalgamation_url = "http://www.gaia-gis.it/gaia-sins/" + download_file
++    download_file = pattern.findall(download_page)[-1]
++    amalgamation_url = "http://www.gaia-gis.it/gaia-sins/libspatialite-sources/" + download_file
+     zip_dir = string.replace(download_file,'.zip','')
+     # and download it
+     urllib.urlretrieve(amalgamation_url, "tmp.zip")
+
