@@ -91,6 +91,8 @@
     },
     panOnActivate: true,
     useLocalData: false,
+    useDemography: false,
+    switchLatLng: true,
     baseStyle: function() {
       return {
         weight: 1,
@@ -532,12 +534,32 @@
   Feature2D = (function(_super) {
     __extends(Feature2D, _super);
 
-    function Feature2D(coords) {
+    function Feature2D(coordinates) {
       Feature2D.__super__.constructor.call(this);
-      this.components = coords.map(function(p) {
+      if (Settings.switchLatLng) {
+        coordinates = coordinates.map(function(polygons) {
+          return polygons.map(function(points) {
+            var p;
+            if (typeof points[0] === 'object') {
+              return points = (function() {
+                var _i, _len, _results;
+                _results = [];
+                for (_i = 0, _len = points.length; _i < _len; _i++) {
+                  p = points[_i];
+                  _results.push([p[1], p[0]]);
+                }
+                return _results;
+              })();
+            } else {
+              return points = [points[1], points[0]];
+            }
+          });
+        });
+      }
+      this.components = coordinates.map(function(p) {
         return new Polygon(p);
       });
-      this.L = new L.MultiPolygon(coords.slice(0), Settings.baseStyle());
+      this.L = new L.MultiPolygon(coordinates.slice(0), Settings.baseStyle());
     }
 
     Feature2D.prototype.centroid = function() {
@@ -649,62 +671,69 @@
     };
 
     function IndustrialPolygon(data) {
-      var coords, name, occupation, occupation_total, race, raceResidual, raceThreshold, race_total, v,
+      var coords, geom, name, occupation, occupation_total, props, race, raceResidual, raceThreshold, race_total, v,
         _this = this;
-      this.gid = data.gid;
-      this.risk_main = data.risk_main;
-      this.risk_res = data.risk_res;
-      this.risk_com = data.risk_com;
-      this.size_metric = data.size_metric;
-      this.naics3 = data.naics.toString().substr(0, 3);
-      this.naics4 = data.naics.toString().substr(0, 4);
+      props = data.properties;
+      geom = data.geometry;
+      this.gid = props.GID;
+      this.risk_main = props.probability.risk_main;
+      this.risk_res = props.probability.risk_res;
+      this.risk_com = props.probability.risk_com;
+      this.size_metric = props.size_metric;
+      this.naics3 = props.naics.toString().substr(0, 3);
+      this.naics4 = props.naics.toString().substr(0, 4);
       this.naics = this.naics4;
-      coords = data.geom;
+      coords = geom.coordinates;
       IndustrialPolygon.__super__.constructor.call(this, coords);
       this.L.obj = this;
-      race = data.demography.race;
-      occupation = data.demography.occupation;
-      race_total = ((function() {
-        var _results;
-        _results = [];
-        for (i in race) {
-          v = race[i];
-          _results.push(v);
+      if (Settings.useDemography) {
+        race = props.demography.race;
+        occupation = props.demography.occupation;
+        race_total = ((function() {
+          var _results;
+          _results = [];
+          for (i in race) {
+            v = race[i];
+            _results.push(v);
+          }
+          return _results;
+        })()).reduce(function(a, b) {
+          return a + b;
+        });
+        occupation_total = ((function() {
+          var _results;
+          _results = [];
+          for (i in occupation) {
+            v = occupation[i];
+            _results.push(v);
+          }
+          return _results;
+        })()).reduce(function(a, b) {
+          return a + b;
+        });
+        raceResidual = 0.0;
+        raceThreshold = 0.02;
+        for (name in race) {
+          v = race[name];
+          race[name] = v / race_total;
         }
-        return _results;
-      })()).reduce(function(a, b) {
-        return a + b;
-      });
-      occupation_total = ((function() {
-        var _results;
-        _results = [];
-        for (i in occupation) {
-          v = occupation[i];
-          _results.push(v);
+        for (name in race) {
+          v = race[name];
+          if (v < raceThreshold) {
+            raceResidual += v;
+            race[name] = 0;
+          }
         }
-        return _results;
-      })()).reduce(function(a, b) {
-        return a + b;
-      });
-      raceResidual = 0.0;
-      raceThreshold = 0.02;
-      for (name in race) {
-        v = race[name];
-        race[name] = v / race_total;
-      }
-      for (name in race) {
-        v = race[name];
-        if (v < raceThreshold) {
-          raceResidual += v;
-          race[name] = 0;
+        if (raceResidual > 0) {
+          race['other'] += raceResidual;
         }
-      }
-      if (raceResidual > 0) {
-        race['other'] += raceResidual;
-      }
-      for (name in occupation) {
-        v = occupation[name];
-        occupation[name] = v / occupation_total;
+        for (name in occupation) {
+          v = occupation[name];
+          occupation[name] = v / occupation_total;
+        }
+      } else {
+        race = {};
+        occupation = {};
       }
       this.demography = {
         race: race,
@@ -746,7 +775,7 @@
     __extends(ConvertedPolygon, _super);
 
     function ConvertedPolygon(data) {
-      ConvertedPolygon.__super__.constructor.call(this, data.geom);
+      ConvertedPolygon.__super__.constructor.call(this, data.geometry.coordinates);
       this.L.setStyle({
         fillOpacity: 0,
         weight: 3,
@@ -763,18 +792,21 @@
   window.ConvertedPolygon = ConvertedPolygon;
 
   MultiPolygonCollection = (function() {
-    function MultiPolygonCollection(type, multipolygons) {
-      var data, id, ls, mp, _i, _len;
+    function MultiPolygonCollection(type, features) {
+      var feature, id, ls, mp, _i, _len;
       this.items = {};
       i = 0;
-      for (_i = 0, _len = multipolygons.length; _i < _len; _i++) {
-        data = multipolygons[_i];
-        if (type === 'industrial') {
-          mp = new IndustrialPolygon(data);
-        } else if (type === 'converted') {
-          mp = new ConvertedPolygon(data);
+      for (_i = 0, _len = features.length; _i < _len; _i++) {
+        feature = features[_i];
+        if (typeof feature.geometry === 'string') {
+          feature.geometry = $.parseJSON(feature.geometry);
         }
-        this.items[data.gid] = mp;
+        if (type === 'industrial') {
+          mp = new IndustrialPolygon(feature);
+        } else if (type === 'converted') {
+          mp = new ConvertedPolygon(feature);
+        }
+        this.items[feature.properties.GID] = mp;
       }
       ls = (function() {
         var _ref, _results;
@@ -786,6 +818,7 @@
         }
         return _results;
       }).call(this);
+      console.log(ls);
       this.L = new L.FeatureGroup(ls);
     }
 
@@ -1014,13 +1047,13 @@
       };
       map = this.map;
       limit_str = limit != null ? '?limit=' + limit : '';
-      url_industrial = this.datapath(dataset) + '/json/development-polygons-all.json';
-      url_converted = this.datapath(dataset) + '/json/converted-polygons-all.json';
+      url_industrial = this.datapath(dataset) + '/json/industrial-0.geojson';
+      url_converted = this.datapath(dataset) + '/json/converted-0.geojson';
       res = HTTP.blocking('GET', url_industrial);
       res.success(function(data) {
-        var bounds, multipolygons;
-        multipolygons = data.multipolygons.slice(1, +limit + 1 || 9e9);
-        _this.industrial = new MultiPolygonCollection('industrial', multipolygons);
+        var bounds;
+        console.log(data);
+        _this.industrial = new MultiPolygonCollection('industrial', data.features);
         bounds = _this.industrial.L.getBounds();
         map.fitBounds(bounds);
         _this.industrial.L.addTo(map);
@@ -1030,9 +1063,7 @@
       });
       res = HTTP.blocking('GET', url_converted);
       return res.success(function(data) {
-        var multipolygons;
-        multipolygons = data.multipolygons.slice(1, +limit + 1 || 9e9);
-        _this.converted = new MultiPolygonCollection('converted', multipolygons);
+        _this.converted = new MultiPolygonCollection('converted', data.features);
         return ILC.vectorLayers['converted-parcels'] = _this.converted.L;
       });
     },

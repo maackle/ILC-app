@@ -65,36 +65,44 @@ class IndustrialPolygon extends Feature2D
 					fillOpacity: Settings.fillOpacity
 	
 	constructor: (data) ->
-		@gid = data.gid
-		@risk_main = data.risk_main
-		@risk_res = data.risk_res
-		@risk_com = data.risk_com
-		@size_metric = data.size_metric
-		@naics3 = data.naics.toString().substr(0,3)
-		@naics4 = data.naics.toString().substr(0,4)
+		props = data.properties
+		geom = data.geometry
+
+		@gid = props.GID
+		@risk_main = props.probability.risk_main
+		@risk_res = props.probability.risk_res
+		@risk_com = props.probability.risk_com
+		@size_metric = props.size_metric
+		@naics3 = props.naics.toString().substr(0,3)
+		@naics4 = props.naics.toString().substr(0,4)
 		@naics = @naics4
 
-		coords = data.geom
+		coords = geom.coordinates
 		super(coords)
 
 		@L.obj = this
 
-		race = data.demography.race
-		occupation = data.demography.occupation
-		race_total = (v for i, v of race).reduce( (a,b) -> a + b )
-		occupation_total = (v for i, v of occupation).reduce( (a,b) -> a + b )
-		raceResidual = 0.0
-		raceThreshold = 0.02
-		for name, v of race
-			race[name] = v / race_total
-		for name, v of race
-			if v < raceThreshold
-				raceResidual += v
-				race[name] = 0
-		if raceResidual > 0
-			race['other'] += raceResidual
-		for name, v of occupation
-			occupation[name] = v / occupation_total
+		if Settings.useDemography
+			race = props.demography.race
+			occupation = props.demography.occupation
+			race_total = (v for i, v of race).reduce( (a,b) -> a + b )
+			occupation_total = (v for i, v of occupation).reduce( (a,b) -> a + b )
+			raceResidual = 0.0
+			raceThreshold = 0.02
+			for name, v of race
+				race[name] = v / race_total
+			for name, v of race
+				if v < raceThreshold
+					raceResidual += v
+					race[name] = 0
+			if raceResidual > 0
+				race['other'] += raceResidual
+			for name, v of occupation
+				occupation[name] = v / occupation_total
+		else
+			race = {}
+			occupation = {}
+
 		@demography =
 			race: race
 			occupation: occupation

@@ -1,11 +1,3 @@
-#_require settings.coffee
-#_require classes/barchart.class.coffee
-#_require classes/colormap.class.coffee
-#_require classes/convertedpolygon.class.coffee
-#_require classes/feature.class.coffee
-#_require classes/feature2d.class.coffee
-#_require classes/industrialpolygon.class.coffee
-#_require classes/multipolygoncollection.class.coffee
 
 window.ILC = 
 
@@ -190,7 +182,6 @@ window.ILC =
 			ILC.resetLegend()
 			@updateFeatures()
 
-
 		map = @map
 		limit_str = 
 			if limit?
@@ -198,13 +189,12 @@ window.ILC =
 			else
 				''
 
-
-		url_industrial = @datapath(dataset) + '/json/development-polygons-all.json'
-		url_converted = @datapath(dataset) + '/json/converted-polygons-all.json'
+		url_industrial = @datapath(dataset) + '/json/industrial-0.geojson'
+		url_converted = @datapath(dataset) + '/json/converted-0.geojson'
 		res = HTTP.blocking 'GET', url_industrial #TODO: make async
 		res.success (data) =>
-			multipolygons = data.multipolygons[1..limit]
-			@industrial = new MultiPolygonCollection('industrial', multipolygons)
+			console.log data
+			@industrial = new MultiPolygonCollection('industrial', data.features)
 			bounds = @industrial.L.getBounds()
 			map.fitBounds(bounds)
 			@industrial.L.addTo(map)
@@ -214,8 +204,7 @@ window.ILC =
 
 		res = HTTP.blocking 'GET', url_converted #TODO: make async
 		res.success (data) =>
-			multipolygons = data.multipolygons[1..limit]
-			@converted = new MultiPolygonCollection('converted', multipolygons)
+			@converted = new MultiPolygonCollection('converted', data.features)
 			ILC.vectorLayers['converted-parcels'] = @converted.L
 			# @converted.L.addTo(@map)
 

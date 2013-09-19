@@ -130,6 +130,67 @@ def create_industrial_table(*project_names):
                     geog_srid=settings.GEOGRAPHIC_SRID,
                 )
 
+
+def task_generate_converted(*project_names):
+
+    set_name = 'converted'
+    
+    with db_connect() as conn:
+        for proj_name in project_names:
+            project = get_project(proj_name)
+
+            query_template = """
+                SELECT *, AsText(geom) as geom_wkt from {table}
+            """
+
+            query = query_template.format(
+                table=project.raw_converted_table,
+                chunk_size=settings.FEATURE_CHUNK_SIZE,
+            )
+
+            cur = conn.execute(query)
+            chunk_num = 0
+            chunk = cur.fetchmany(settings.FEATURE_CHUNK_SIZE)
+
+            json_dir = project.app_data_dir('json')
+            lazy_mkdir(json_dir)
+
+            for f in os.listdir(json_dir):
+                if f.startswith(set_name+'-') and f.endswith('.geojson'):
+                    # print f
+                    os.remove(os.path.join(json_dir, f))
+
+            while chunk:
+
+                with open(os.path.join(json_dir, set_name+'-{0}.geojson'.format(chunk_num)), 'w') as f:
+
+                    features = []
+
+                    for row in chunk:
+                        properties = {}
+                        for k in row.keys():
+                            if k not in ('geom', 'geom_wkt'):
+                                properties[k] = row[k]
+
+                        geometry = wkt.loads(row['geom_wkt'])
+                        geometry = geojson.loads(geojson.dumps(geometry))
+
+                        features.append({
+                            'type': 'Feature',
+                            'geometry': geometry,
+                            'properties': properties,
+                        })
+
+                    f.write(json.dumps({
+                        'type': 'FeatureCollection',
+                        'features': features,
+                    }))
+
+                chunk = cur.fetchmany(settings.FEATURE_CHUNK_SIZE)
+                chunk_num += 1
+
+
+
 def task_generate_industrial(*project_names):
     create_industrial_table(*project_names)
     setup_project_directories()
@@ -239,6 +300,7 @@ def main():
         'localize-demography': task_localize_demography,
         'process-demography': task_process_demography,
         'generate-industrial': task_generate_industrial,
+        'generate-converted': task_generate_converted,
     }
 
     parser = argparse.ArgumentParser(

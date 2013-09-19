@@ -2,7 +2,7 @@
 class ConvertedPolygon extends Feature2D
 
 	constructor: (data) ->
-		super(data.geom)
+		super(data.geometry.coordinates)
 
 		@L.setStyle
 			# dashArray: "3 6"

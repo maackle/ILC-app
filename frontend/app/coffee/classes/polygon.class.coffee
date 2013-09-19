@@ -5,6 +5,9 @@ class Polygon
 	L: null
 
 	constructor: (coords) ->
+		if typeof coords[0][0] == 'array'
+			console.warn "cannot use polygon with holes, using exterior ring only."
+			coords = coords[0]
 		@coords = coords[..]
 		@L = new L.Polygon(coords)
 

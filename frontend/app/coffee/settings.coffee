@@ -21,6 +21,8 @@ window.Settings =
 	panOnActivate: true
 
 	useLocalData: false
+	useDemography: false  # don't care about demography for now
+	switchLatLng: true  # if incoming polygon data is longitude, latitude
 
 	baseStyle: ->
 		weight: 1

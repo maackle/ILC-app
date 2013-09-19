@@ -1,12 +1,20 @@
 
 class Feature2D extends Feature
 	
-	constructor: (coords) ->
+	constructor: (coordinates) ->
 		super()
-		@components = coords.map (p)->
+		if Settings.switchLatLng
+			coordinates = coordinates.map (polygons) ->
+				polygons.map (points) ->
+					if typeof points[0] == 'object'  # polygon is defined as multiple rings
+						points = ([p[1], p[0]] for p in points)
+					else
+						points = [points[1], points[0]] 
+		
+		@components = coordinates.map (p)->
 			new Polygon(p)
 
-		@L = new L.MultiPolygon coords[..],
+		@L = new L.MultiPolygon coordinates[..],
 			Settings.baseStyle()
 
 	centroid: ->
