@@ -1,4 +1,4 @@
-BEGIN;
+-- BEGIN;
 
 DROP TABLE IF EXISTS :occupation_table;
 CREATE TABLE :occupation_table (
@@ -41,9 +41,9 @@ INSERT INTO :occupation_table (gid, management, service, office, construction, m
 	GROUP BY GID
 ;
 
-END;
+-- END;
 
-BEGIN;
+-- BEGIN;
 
 DROP TABLE IF EXISTS :race_table;
 CREATE TABLE :race_table (
@@ -84,4 +84,4 @@ INSERT INTO :race_table (gid, white, black, asian, multi)
 	GROUP BY GID
 ;
 
-END;
+-- END;

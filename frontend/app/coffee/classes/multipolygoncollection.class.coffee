@@ -1,19 +1,18 @@
 
 class MultiPolygonCollection
 
-	constructor: (type, features) ->
+	constructor: (@polygonClass, features) ->
 		@items = {}
-		i = 0
-		for feature in features
+		@L = new L.FeatureGroup()
 
+	addFeatures: (features) ->
+		for feature in features
 			if typeof(feature.geometry) == 'string'
 				feature.geometry = $.parseJSON(feature.geometry)
-			if type == 'industrial'
-				mp = new IndustrialPolygon(feature)
-			else if type == 'converted'
-				mp = new ConvertedPolygon(feature)
+			mp = new @polygonClass(feature)
 			@items[feature.properties.gid] = mp
-		ls = (mp.L for id, mp of @items)
-		@L = new L.FeatureGroup(ls)
+			@L.addLayer mp.L
+		console.log "LL", @L
+
 
 window.MultiPolygonCollection = MultiPolygonCollection

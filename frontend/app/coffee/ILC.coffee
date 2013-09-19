@@ -193,8 +193,8 @@ window.ILC =
 		url_converted = @datapath(dataset) + '/json/converted-0.geojson'
 		res = HTTP.blocking 'GET', url_industrial #TODO: make async
 		res.success (data) =>
-			@industrial = new MultiPolygonCollection('industrial', data.features)
-			console.log @industrial.L, @industrial.items
+			@industrial = new MultiPolygonCollection(IndustrialPolygon)
+			@industrial.addFeatures(data.features)
 			bounds = @industrial.L.getBounds()
 			map.fitBounds(bounds)
 			@industrial.L.addTo(map)
@@ -204,7 +204,8 @@ window.ILC =
 
 		res = HTTP.blocking 'GET', url_converted #TODO: make async
 		res.success (data) =>
-			@converted = new MultiPolygonCollection('converted', data.features)
+			@converted = new MultiPolygonCollection(ConvertedPolygon)
+			@converted.addFeatures(data.features)
 			ILC.vectorLayers['converted-parcels'] = @converted.L
 			# @converted.L.addTo(@map)
 

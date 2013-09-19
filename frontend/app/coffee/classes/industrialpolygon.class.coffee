@@ -38,8 +38,6 @@ class IndustrialPolygon extends Feature2D
 
 	risk: ->
 		if ! @risk_main? then throw "risk_main not set"
-		if ! @risk_res? then throw "risk_res not set"
-		if ! @risk_com? then throw "risk_com not set"
 		val = switch IndustrialPolygon.riskType
 			when 'risk_main' then @risk_main
 			when 'risk_res' then @risk_res

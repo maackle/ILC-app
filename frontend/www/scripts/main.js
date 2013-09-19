@@ -625,12 +625,6 @@
       if (this.risk_main == null) {
         throw "risk_main not set";
       }
-      if (this.risk_res == null) {
-        throw "risk_res not set";
-      }
-      if (this.risk_com == null) {
-        throw "risk_com not set";
-      }
       val = (function() {
         switch (IndustrialPolygon.riskType) {
           case 'risk_main':
@@ -792,34 +786,25 @@
   window.ConvertedPolygon = ConvertedPolygon;
 
   MultiPolygonCollection = (function() {
-    function MultiPolygonCollection(type, features) {
-      var feature, id, ls, mp, _i, _len;
+    function MultiPolygonCollection(polygonClass, features) {
+      this.polygonClass = polygonClass;
       this.items = {};
-      i = 0;
+      this.L = new L.FeatureGroup();
+    }
+
+    MultiPolygonCollection.prototype.addFeatures = function(features) {
+      var feature, mp, _i, _len;
       for (_i = 0, _len = features.length; _i < _len; _i++) {
         feature = features[_i];
         if (typeof feature.geometry === 'string') {
           feature.geometry = $.parseJSON(feature.geometry);
         }
-        if (type === 'industrial') {
-          mp = new IndustrialPolygon(feature);
-        } else if (type === 'converted') {
-          mp = new ConvertedPolygon(feature);
-        }
+        mp = new this.polygonClass(feature);
         this.items[feature.properties.gid] = mp;
+        this.L.addLayer(mp.L);
       }
-      ls = (function() {
-        var _ref, _results;
-        _ref = this.items;
-        _results = [];
-        for (id in _ref) {
-          mp = _ref[id];
-          _results.push(mp.L);
-        }
-        return _results;
-      }).call(this);
-      this.L = new L.FeatureGroup(ls);
-    }
+      return console.log("LL", this.L);
+    };
 
     return MultiPolygonCollection;
 
@@ -1051,8 +1036,8 @@
       res = HTTP.blocking('GET', url_industrial);
       res.success(function(data) {
         var bounds;
-        _this.industrial = new MultiPolygonCollection('industrial', data.features);
-        console.log(_this.industrial.L, _this.industrial.items);
+        _this.industrial = new MultiPolygonCollection(IndustrialPolygon);
+        _this.industrial.addFeatures(data.features);
         bounds = _this.industrial.L.getBounds();
         map.fitBounds(bounds);
         _this.industrial.L.addTo(map);
@@ -1062,7 +1047,8 @@
       });
       res = HTTP.blocking('GET', url_converted);
       return res.success(function(data) {
-        _this.converted = new MultiPolygonCollection('converted', data.features);
+        _this.converted = new MultiPolygonCollection(ConvertedPolygon);
+        _this.converted.addFeatures(data.features);
         return ILC.vectorLayers['converted-parcels'] = _this.converted.L;
       });
     },

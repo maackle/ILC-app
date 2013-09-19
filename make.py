@@ -93,11 +93,12 @@ def task_load_all():
     task_load_project_shapefiles(*project_names)
 
 
-def task_process_demography():
+def task_process_demography(*project_names):
     with open("sql/process-demography.sql") as f:
         script_template = " ".join(f.readlines())
-        with db_connect() as conn:
-            for project in projects:
+        for proj_name in project_names:
+            project = get_project(proj_name)
+            with db_connect() as conn:
                 run_spatialite_script(conn, script_template, 
                     local_demography_table=project.raw_demography_table,
                     raw_industrial_table=project.raw_industrial_table,
