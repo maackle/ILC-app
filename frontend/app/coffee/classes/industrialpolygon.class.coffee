@@ -68,7 +68,7 @@ class IndustrialPolygon extends Feature2D
 		props = data.properties
 		geom = data.geometry
 
-		@gid = props.GID
+		@gid = props.gid
 		@risk_main = props.probability.risk_main
 		@risk_res = props.probability.risk_res
 		@risk_com = props.probability.risk_com

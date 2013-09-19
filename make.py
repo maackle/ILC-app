@@ -168,9 +168,10 @@ def task_generate_converted(*project_names):
 
                     for row in chunk:
                         properties = {}
-                        for k in row.keys():
+                        for key in row.keys():
+                            k = key.lower()
                             if k not in ('geom', 'geom_wkt'):
-                                properties[k] = row[k]
+                                properties[k] = row[key]
 
                         geometry = wkt.loads(row['geom_wkt'])
                         geometry = geojson.loads(geojson.dumps(geometry))

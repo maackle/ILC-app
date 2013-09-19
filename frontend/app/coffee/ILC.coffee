@@ -193,8 +193,8 @@ window.ILC =
 		url_converted = @datapath(dataset) + '/json/converted-0.geojson'
 		res = HTTP.blocking 'GET', url_industrial #TODO: make async
 		res.success (data) =>
-			console.log data
 			@industrial = new MultiPolygonCollection('industrial', data.features)
+			console.log @industrial.L, @industrial.items
 			bounds = @industrial.L.getBounds()
 			map.fitBounds(bounds)
 			@industrial.L.addTo(map)

@@ -675,7 +675,7 @@
         _this = this;
       props = data.properties;
       geom = data.geometry;
-      this.gid = props.GID;
+      this.gid = props.gid;
       this.risk_main = props.probability.risk_main;
       this.risk_res = props.probability.risk_res;
       this.risk_com = props.probability.risk_com;
@@ -806,7 +806,7 @@
         } else if (type === 'converted') {
           mp = new ConvertedPolygon(feature);
         }
-        this.items[feature.properties.GID] = mp;
+        this.items[feature.properties.gid] = mp;
       }
       ls = (function() {
         var _ref, _results;
@@ -818,7 +818,6 @@
         }
         return _results;
       }).call(this);
-      console.log(ls);
       this.L = new L.FeatureGroup(ls);
     }
 
@@ -1052,8 +1051,8 @@
       res = HTTP.blocking('GET', url_industrial);
       res.success(function(data) {
         var bounds;
-        console.log(data);
         _this.industrial = new MultiPolygonCollection('industrial', data.features);
+        console.log(_this.industrial.L, _this.industrial.items);
         bounds = _this.industrial.L.getBounds();
         map.fitBounds(bounds);
         _this.industrial.L.addTo(map);
