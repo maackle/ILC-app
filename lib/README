@@ -1,0 +1,12 @@
+installing pyspatialite:
+	
+	pip install lib/pyspatialite-blahblahblah
+
+installing spatialite:
+
+DON'T USE 4.1 -- pyspatialite uses 3.x so use that
+need to build libspatialite from source to get 3.x
+then to link, make sure pkgconfig/pkg-config is good to go:
+
+export "PKG_CONFIG_PATH=/usr/local/lib/pkgconfig"
+pkg-config --libs spatialite
