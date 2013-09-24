@@ -210,16 +210,16 @@ def task_process_demography(*project_names):
                     query = """
                         INSERT INTO {target_table} (gid, {name_list}) 
                         SELECT
-                            GID,
+                            ROWID,
                             {assignment_list}
                         FROM (
                             SELECT 
-                                raw.GID,
+                                raw.ROWID,
                                 census.*,
                                 ST_Area( ST_Intersection( circle_buffer, census.tract ) ) / census.tract_area AS density
                             FROM (
                                 SELECT
-                                    GID,
+                                    ROWID,
                                     ST_Buffer( ST_Transform( ST_Centroid(geom), {equal_area_srid} ), 1609*{buffer_mi} ) as circle_buffer
                                 FROM {raw_industrial_table}
                                 LIMIT {limit} OFFSET {offset}
@@ -233,7 +233,7 @@ def task_process_demography(*project_names):
                             ) as census
                             ON ST_Intersects( raw.circle_buffer, census.tract )
                         )
-                        GROUP BY GID;
+                        GROUP BY ROWID;
                     """.format(
                         target_table=target_table,
                         local_demography_table=project.raw_demography_table,
@@ -352,7 +352,7 @@ def task_generate_industrial(*project_names):
             industrial_features = []
 
             query_template = """
-                SELECT *, AsText(geom) as geom_wkt from {industrial} i
+                SELECT *, ROWID as gid, AsText(geom) as geom_wkt from {industrial} i
             """
             if settings.USE_DEMOGRAPHY:
                 query_template += " JOIN {race} r ON r.gid = i.gid JOIN {occupation} o ON o.gid = i.gid "

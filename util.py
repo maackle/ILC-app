@@ -21,7 +21,8 @@ def execute_sql_command(sql):
 
 def load_shapefile(name, path, srid, prefix=''):
     table = prefix + name
-    line = ".loadshp {shp} {table} {encoding} {srid} {geom_column_name} {pk_name} MULTIPOLYGON 2d 0 1".format(
+    # line = ".loadshp {shp} {table} {encoding} {srid} {geom_column_name} {pk_name} MULTIPOLYGON 2d 0 1".format(
+    line = ".loadshp {shp} {table} {encoding} {srid} {geom_column_name} 2d 0".format(
         table=table,
         shp=global_raw_data_dir(path),
         encoding=settings.SPATIALITE_ENCODING,
@@ -29,6 +30,7 @@ def load_shapefile(name, path, srid, prefix=''):
         geom_column_name=settings.SPATIALITE_GEOMETRY_COLUMN_NAME,
         pk_name=settings.SPATIALITE_PK_NAME,
     )
+    
     execute_sql_command("DROP TABLE IF EXISTS {table};".format(table=table))
     execute_sql_command(line)
     # execute_sql_command("SELECT CreateSpatialIndex('{table}', '{geom_column_name}');".format(
