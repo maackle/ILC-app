@@ -446,16 +446,10 @@ window.ILC =
 						label: 'White'
 					black:
 						label: 'Black'
-					islander:
-						label: 'Islander'
-					native:
-						label: 'Native American'
 					asian:
 						label: 'Asian'
-					mixed:
+					multi:
 						label: 'Mixed'
-					other:
-						label: 'Other'
 
 			occupation: new StackedBarChart 
 				width: Settings.barGraphWidth

@@ -10,6 +10,8 @@ CREATE TABLE :occupation_table (
 	manufacturing	FLOAT
 );
 
+SELECT "starting...";
+
 INSERT INTO :occupation_table (gid, management, service, office, construction, manufacturing) 
 	SELECT
 		GID,
@@ -40,6 +42,8 @@ INSERT INTO :occupation_table (gid, management, service, office, construction, m
 	)
 	GROUP BY GID
 ;
+
+SELECT ":occupation_table done";
 
 -- END;
 
@@ -83,5 +87,7 @@ INSERT INTO :race_table (gid, white, black, asian, multi)
 	)
 	GROUP BY GID
 ;
+
+SELECT ":race_table done";
 
 -- END;

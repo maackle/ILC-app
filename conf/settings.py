@@ -17,8 +17,9 @@ BROWNFIELDS_TABLE = '_G_brownfields'
 COUNTIES_TABLE = '_G_counties'
 DEMOGRAPHY_TABLE = '_G_demography'
 
-USE_DEMOGRAPHY = False  # I don't care about demography right now
+USE_DEMOGRAPHY = True
 FEATURE_CHUNK_SIZE = 1000  # How many features go into a single geojson file?
+BACKEND_CHUNK_SIZE = 50
 
 
 global_datasets = {
@@ -38,4 +39,57 @@ global_datasets = {
         'path': 'nationaldata/TRACT_ACS_07_11-2163',
         'srid': EQUAL_AREA_SRID,
     },
+}
+
+
+demography_categories = {
+    'race_categories': (
+        {
+            'rawname': 'WHITE',
+            'name': 'white',
+            'title': 'White',
+        },
+        {
+            'rawname': 'BLACK',
+            'name': 'black',
+            'title': 'Black',
+        },
+        {
+            'rawname': 'ASIAN',
+            'name': 'asian',
+            'title': 'Asian',
+        },
+        {
+            'rawname': 'MULTI',
+            'name': 'multi',
+            'title': 'Multiple',
+        },
+    ),
+    'occupation_categories': (
+        {
+            'rawname': 'PROD',
+            'name': 'manufacturing',
+            'title': 'Manufacturing',
+        },
+        {
+            'rawname': 'CONST',
+            'name': 'construction',
+            'title': 'Construction',
+        },
+        {
+            'rawname': 'MGMT',
+            'name': 'management',
+            'title': 'Management',
+        },
+        {
+            'rawname': 'SERVICE',
+            'name': 'service',
+            'title': 'Service',
+        },
+        {
+            'rawname': 'OFFICE',
+            'name': 'office',
+            'title': 'Office',
+        },
+    ),
 }

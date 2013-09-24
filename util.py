@@ -15,6 +15,7 @@ def global_raw_data_dir(path):
 def execute_sql_command(sql):
     code = os.system("echo \"{sql}\" | spatialite {file}".format(sql=sql, file=settings.SPATIALITE_DB_FILE))
     if code > 0:
+        print sql
         raise Exception("SQL Error")
 
 

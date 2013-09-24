@@ -21,7 +21,7 @@ def interpolate_sql(script, **kwargs):
         script = script.replace(":%s" % str(k), str(v))
     return script
 
-def run_spatialite_script(conn, script_template, driver='sqlite', print_script=False, **kwargs):
+def run_file_based_spatialite_script(conn, script_template, driver='sqlite', print_script=False, **kwargs):
     assert driver == 'sqlite', "Unsupported driver: %s" % driver
     script = interpolate_sql(script_template, **kwargs)
     if print_script:
@@ -31,6 +31,15 @@ def run_spatialite_script(conn, script_template, driver='sqlite', print_script=F
         f.write(script)
     os.close(fd)
     return call("spatialite {db} < {script}".format(script=path, db=settings.SPATIALITE_DB_FILE), shell=True)
+
+
+def run_spatialite_script(conn, script_template, driver='sqlite', print_script=False, **kwargs):
+    assert driver == 'sqlite', "Unsupported driver: %s" % driver
+    script = interpolate_sql(script_template, **kwargs)
+    with db_connect() as conn:
+        cur = conn.executescript(script)
+        conn.commit()
+    return cur
 
 
 class db_connect:
@@ -57,25 +66,57 @@ def task_localize_demography(*names):
     if not names:
         print "Please specify the names of projects you want to load."
         print "Did nothing..."
-    with open("sql/localize-demography.sql") as f:
-        script_template = " ".join(f.readlines())
-        with db_connect() as conn:
-            for name in names:
-                project = get_project(name)
-                fips5_list = project.fips5_list
-                if len(fips5_list) > 1:
-                    fips5_list = str(fips5_list)
-                elif len(fips5_list) == 1:
-                    fips5_list = "({0})".format(fips5_list[0])
-                else:
-                    raise "no fips5_list specified"
+    for proj_name in names:
+        project = get_project(proj_name)
+        fips_list = project.fips_list
+        if len(fips_list) > 1:
+            fips_list = str(fips_list)
+        elif len(fips_list) == 1:
+            fips_list = "('{0}')".format(fips_list[0])
+        else:
+            raise "no fips_list specified"
 
-                run_spatialite_script(conn, script_template,
-                    global_demography_table=settings.DEMOGRAPHY_TABLE,
-                    local_demography_table=project.raw_demography_table,
-                    buffer_radius=1609*10,
-                    fips5_list=fips5_list,
-                )
+        with db_connect() as conn:
+            conn.execute("DROP TABLE IF EXISTS {local_demography_table}".format(local_demography_table=project.raw_demography_table))
+            print '[{0}] Dropped local demography table'.format(proj_name)
+
+            conn.execute("""
+                CREATE TABLE {local_demography_table} AS
+                    SELECT * FROM {global_demography_table}
+                    LIMIT 0
+                ;
+            """.format(
+                global_demography_table=settings.DEMOGRAPHY_TABLE,
+                local_demography_table=project.raw_demography_table,
+            ))
+            print '[{0}] Recreated local demography table'.format(proj_name)
+
+            fips_query = """
+                select FIPS from _G_counties where intersects(geom, (select collect(geom) from _G_counties where FIPS in {fips_list}))
+            """.format(
+                fips_list=fips_list
+            )
+
+            extended_fips_list = "(" + ",".join("'{0}'".format(row[0]) for row in conn.execute(fips_query).fetchall()) + ")"
+
+            cur = None
+            limit = 5
+            offset = 0
+            # while not cur or cur.rowcount > 0:
+            query = """
+                INSERT INTO {local_demography_table}
+                SELECT * FROM {global_demography_table}
+                where substr(GEOID10, 1, 5) IN {extended_fips_list}
+            """.format(
+                global_demography_table=settings.DEMOGRAPHY_TABLE,
+                local_demography_table=project.raw_demography_table,
+                buffer_radius=1609*10,
+                extended_fips_list=extended_fips_list,
+            )
+            cur = conn.execute(query)
+            offset += limit
+            print "rows added:", cur.rowcount
+            conn.commit()
 
 
 def task_load_project_shapefiles(*names):
@@ -93,19 +134,123 @@ def task_load_all():
     task_load_project_shapefiles(*project_names)
 
 
+def rebuild_demography_tables(*project_names):
+    for proj_name in project_names:
+
+        print '[{0}] Rebuilding demography table'.format(proj_name)
+
+        project = get_project(proj_name)
+
+        race_definitions = ",".join("{name} FLOAT".format(name=cat['name']) for cat in settings.demography_categories['race_categories'])
+        occupation_definitions = ",".join("{name} FLOAT".format(name=cat['name']) for cat in settings.demography_categories['occupation_categories'])
+
+        race_script = """
+            BEGIN;
+            DROP TABLE IF EXISTS {table};
+            CREATE TABLE {table} (
+                gid         INT PRIMARY KEY,
+                {field_definitions}
+            );
+            END;
+        """.format(
+            table=project.race_table,
+            field_definitions=race_definitions,
+        )
+
+        occupation_script = """
+            BEGIN;
+            DROP TABLE IF EXISTS {table};
+            CREATE TABLE {table} (
+                gid         INT PRIMARY KEY,
+                {field_definitions}
+            );
+            END;
+        """.format(
+            table=project.occupation_table,
+            field_definitions=occupation_definitions,
+        )
+
+        with db_connect() as conn:
+            conn.executescript(race_script)
+            conn.executescript(occupation_script)
+            conn.commit()
+
+
+
 def task_process_demography(*project_names):
-    with open("sql/process-demography.sql") as f:
-        script_template = " ".join(f.readlines())
-        for proj_name in project_names:
-            project = get_project(proj_name)
+
+    rebuild_demography_tables(*project_names)
+    
+    for proj_name in project_names:
+        project = get_project(proj_name)
+
+        for what in ('race', 'occupation'):
+            if what == 'race':
+                target_table = project.race_table
+                buffer_mi = 1.0
+            elif what == 'occupation':
+                target_table = project.occupation_table
+                buffer_mi = 5.0
+            category_key = what + '_categories'
+            categories = settings.demography_categories[category_key]
+            rawname_list = ",".join(cat['rawname'] for cat in categories)
+            name_list = ",".join(cat['name'] for cat in categories)
+            assignment_list = ",".join(
+                ("SUM( density * {rawname} ) AS {name}".format(rawname=cat['rawname'], name=cat['name']) for cat in categories)
+            )
+
+           
             with db_connect() as conn:
-                run_spatialite_script(conn, script_template, 
-                    local_demography_table=project.raw_demography_table,
-                    raw_industrial_table=project.raw_industrial_table,
-                    occupation_table=project.occupation_table,
-                    race_table=project.race_table,
-                    equal_area_srid=settings.EQUAL_AREA_SRID,
-                )
+                print 'processing ', proj_name, ':', what
+
+                cur = None
+                limit = settings.BACKEND_CHUNK_SIZE
+                offset = 0
+                while not cur or cur.rowcount > 0:
+                    query = """
+                        INSERT INTO {target_table} (gid, {name_list}) 
+                        SELECT
+                            GID,
+                            {assignment_list}
+                        FROM (
+                            SELECT 
+                                raw.GID,
+                                census.*,
+                                ST_Area( ST_Intersection( circle_buffer, census.tract ) ) / census.tract_area AS density
+                            FROM (
+                                SELECT
+                                    GID,
+                                    ST_Buffer( ST_Transform( ST_Centroid(geom), {equal_area_srid} ), 1609*{buffer_mi} ) as circle_buffer
+                                FROM {raw_industrial_table}
+                                LIMIT {limit} OFFSET {offset}
+                            ) as raw
+                             JOIN (
+                                SELECT 
+                                    {rawname_list},
+                                    geom as tract,
+                                    ST_Area( geom ) as tract_area
+                                FROM {local_demography_table}
+                            ) as census
+                            ON ST_Intersects( raw.circle_buffer, census.tract )
+                        )
+                        GROUP BY GID;
+                    """.format(
+                        target_table=target_table,
+                        local_demography_table=project.raw_demography_table,
+                        raw_industrial_table=project.raw_industrial_table,
+                        equal_area_srid=settings.EQUAL_AREA_SRID,
+                        name_list=name_list,
+                        rawname_list=rawname_list,
+                        assignment_list=assignment_list,
+                        buffer_mi=buffer_mi,
+                        limit=limit,
+                        offset=offset,
+                    )
+                    cur = conn.execute(query)
+                    print "rows inserted:", cur.rowcount, "( offset", offset, ")"
+                    offset += limit
+                    conn.commit()
+
 
 def create_industrial_table(*project_names):
 
@@ -292,6 +437,31 @@ def task_build():
     setup_project_directories()
 
 
+def task_kokoromi(*project_names):
+     for proj_name in project_names:
+        project = get_project(proj_name)
+        with db_connect() as conn:
+            query_transform = """select AsText( Transform( Centroid( GUnion( Centroid(
+                ( select geom from {table} limit 100 )
+            )) ), {srid} ) ) from {table}"""
+            query_plain = """select AsText( Centroid( GUnion( Centroid(
+                (select geom from {table} limit 100)
+            )) ) ) from {table}"""
+
+            q1 = query_transform.format(
+                table=project.raw_demography_table,
+                srid=2163,
+            )
+
+            q2 = query_transform.format(
+                table=project.raw_industrial_table,
+                srid=2163,
+            )
+
+            print conn.execute(q1).fetchall()
+            print conn.execute(q2).fetchone()
+
+
 def main():
 
     tasks = {
@@ -303,6 +473,7 @@ def main():
         'process-demography': task_process_demography,
         'generate-industrial': task_generate_industrial,
         'generate-converted': task_generate_converted,
+        'kokoromi': task_kokoromi,
     }
 
     parser = argparse.ArgumentParser(

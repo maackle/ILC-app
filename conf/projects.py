@@ -14,14 +14,14 @@ class ProjectDefinition(object):
     def __str__(self):
         return unicode(self)
 
-    def __init__(self, name, title, industrial_parcels, demography, converted_parcels_shapefile, raster_layers, fips5_list):
+    def __init__(self, name, title, industrial_parcels, demography, converted_parcels_shapefile, raster_layers, fips_list):
         self.name = name
         self.title = title
         self.demography = demography
         self.industrial_parcels = industrial_parcels
         self.converted_parcels_shapefile = converted_parcels_shapefile
         self.raster_layers = raster_layers
-        self.fips5_list = fips5_list
+        self.fips_list = fips_list
 
     def raw_data_dir(self, path=''):
         return os.path.join(settings.RAW_DATA_DIR, self.name, path)
@@ -60,47 +60,13 @@ class ProjectDefinition(object):
         load_shapefile(self.raw_industrial_table, self.industrial_parcels['shapefile'], self.SRID)
         load_shapefile(self.raw_converted_table, self.converted_parcels_shapefile, self.SRID)
 
-demography_options = {
-    'race_categories': (
-        {
-            'name': 'white',
-            'title': 'White',
-        },
-        {
-            'name': 'black',
-            'title': 'Black',
-        },
-        {
-            'name': 'asian',
-            'title': 'Asian',
-        },
-        {
-            'name': 'multi',
-            'title': 'Multiple',
-        },
-    ),
-    'occupation_categories': (
-        {
-            'name': 'manufacturing',
-            'title': 'Manufacturing',
-        },
-        {
-            'name': 'construction',
-            'title': 'Construction',
-        },
-        {
-            'name': 'management',
-            'title': 'Management',
-        },
-        {
-            'name': 'service',
-            'title': 'Service',
-        },
-        {
-            'name': 'office',
-            'title': 'Office',
-        },
-    ),
+
+demography_race_fields = {
+    'MGMT': 'management',
+    'SERVICE': 'service',
+    'OFFICE': 'office',
+    'CONST': 'construction',
+    'PROD': 'manufacturing',
 }
 
 meck = ProjectDefinition(
@@ -126,7 +92,7 @@ meck = ProjectDefinition(
             },
         ),
     },
-    demography=demography_options,
+    demography=settings.demography_categories,
     converted_parcels_shapefile='alreadyconverted/meck-4326',
     raster_layers=(
         {
@@ -138,7 +104,7 @@ meck = ProjectDefinition(
         },
         # TODO ...
     ),
-    fips5_list=('51117', '37119')
+    fips_list=('51117', '37119')
 )
 
 
@@ -155,10 +121,10 @@ cook = ProjectDefinition(
             },
         ),
     },
-    demography=demography_options,
+    demography=settings.demography_categories,
     converted_parcels_shapefile='cook_rawdata/cook_alreadyconverted',
     raster_layers=(),
-    fips5_list=('17031',)
+    fips_list=('17031',)
 )
 
 projects = set((
