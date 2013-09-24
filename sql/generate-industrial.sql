@@ -1,6 +1,4 @@
 
-BEGIN;
-
 DROP TABLE IF EXISTS :table;
 CREATE TABLE :table (
 	gid			 		INT	PRIMARY KEY,
@@ -22,7 +20,7 @@ INSERT INTO :table (
 	)
 	SELECT 
 -- proxy (same values as raw)
-		raw.gid, naics,
+		raw.ROWID, naics,
 
 -- risk values
 		:probability_rawname_list
@@ -37,5 +35,3 @@ INSERT INTO :table (
 ;
 
 SELECT COUNT(gid) FROM :table; -- just to display total
-
-END;
