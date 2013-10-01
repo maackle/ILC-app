@@ -1661,7 +1661,7 @@
     console.log("here we go");
     return $(function() {
       return ILC.initialize({
-        dataset: window.location.hash.substr(1) | 'meck',
+        dataset: window.location.hash.substring(1) || 'meck',
         limit: 500
       });
     });
