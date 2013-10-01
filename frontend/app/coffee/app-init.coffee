@@ -128,6 +128,6 @@ $ ->
 	
 	$ ->
 		ILC.initialize
-			dataset: 'cook'
+			dataset: window.location.hash.substr(1) | 'meck'
 			limit: 500
 		
