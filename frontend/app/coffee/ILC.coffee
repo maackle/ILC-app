@@ -232,7 +232,7 @@ window.ILC =
 			@naics_trends = data.naics_trends
 			console.log 'NAAAAICS', @naics_trends
 
-		res = HTTP.blocking 'GET', '/data/naics-list.json'
+		res = HTTP.blocking 'GET', @datapath(dataset) + '/naics-list.json'
 		res.success (data) =>
 			@naics_list = data.naics_list
 

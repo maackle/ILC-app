@@ -1140,7 +1140,7 @@
         _this.naics_trends = data.naics_trends;
         return console.log('NAAAAICS', _this.naics_trends);
       });
-      res = HTTP.blocking('GET', '/data/naics-list.json');
+      res = HTTP.blocking('GET', this.datapath(dataset) + '/naics-list.json');
       res.success(function(data) {
         return _this.naics_list = data.naics_list;
       });
