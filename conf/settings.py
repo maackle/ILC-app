@@ -7,7 +7,7 @@ EQUAL_AREA_SRID = 2163
 GEOGRAPHIC_SRID = 4326
 
 SPATIALITE_DB_FILE = 'db.sqlite'
-SPATIALITE_ENCODING = 'ASCII'
+SPATIALITE_ENCODING = 'utf-8'
 SPATIALITE_GEOMETRY_COLUMN_NAME = 'geom'
 
 SPATIALITE_PK_NAME = 'PK_UID'
@@ -23,6 +23,11 @@ BACKEND_CHUNK_SIZE = 250   # break up intensive SQL insertions into batches of t
 
 
 global_datasets = {
+    'brownfields': {
+        'table': BROWNFIELDS_TABLE,
+        'path': 'nationaldata/brownfields',
+        'srid': GEOGRAPHIC_SRID,
+    },
     'counties': {
         'table': COUNTIES_TABLE,
         'path': 'nationaldata/Counties',

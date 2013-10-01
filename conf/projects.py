@@ -37,6 +37,10 @@ class ProjectDefinition(object):
         return '_R_' + self.name + '_industrial'
 
     @property
+    def raw_brownfields_table(self):
+        return '_R_' + self.name + '_brownfields'
+
+    @property
     def raw_converted_table(self):
         return '_R_' + self.name + '_converted'
 

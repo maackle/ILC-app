@@ -897,7 +897,19 @@
       return this._pxScale;
     },
     datapath: function(dataset) {
-      return "data/" + dataset;
+      if (dataset == null) {
+        dataset = '';
+      }
+      if (dataset[-1] === '/') {
+        dataset = dataset[{
+          0: -2
+        }];
+      }
+      if (__indexOf.call(window.location, 'localhost') >= 0) {
+        return "/data/" + dataset;
+      } else {
+        return "data/" + dataset;
+      }
     },
     initialize: function(opts) {
       var dataset, limit;
@@ -1127,7 +1139,7 @@
       Colormap.updatePreviews(Settings.initialColorBins);
       Colormap.setCurrent(0);
       _results = [];
-      for (i = _i = 0; _i <= 32; i = ++_i) {
+      for (i = _i = 0; _i <= 2; i = ++_i) {
         _results.push(loadChunk(i));
       }
       return _results;
@@ -1140,11 +1152,11 @@
         _this.naics_trends = data.naics_trends;
         return console.log('NAAAAICS', _this.naics_trends);
       });
-      res = HTTP.blocking('GET', this.datapath(dataset) + '/naics-list.json');
+      res = HTTP.blocking('GET', this.datapath() + '/naics-list.json');
       res.success(function(data) {
         return _this.naics_list = data.naics_list;
       });
-      res = HTTP.blocking('GET', this.datapath(dataset) + '/json/brownfields.geojson');
+      res = HTTP.blocking('GET', this.datapath(dataset) + '/brownfields.geojson');
       res.success(function(data) {
         _this.layers.brownfields = L.geoJson(data, {
           pointToLayer: function(feature, latlng) {

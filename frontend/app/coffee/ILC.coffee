@@ -32,7 +32,13 @@ window.ILC =
 		@_pxScale
 
 	datapath: (dataset) ->
-		"data/#{ dataset }"
+		dataset ?= ''
+		if dataset[-1] == '/'
+			dataset = dataset[0:-2]
+		if 'localhost' in window.location
+			"/data/#{dataset}"
+		else
+			"data/#{ dataset }"
 
 	initialize: (opts) ->
 		{dataset, limit} = opts
@@ -220,7 +226,7 @@ window.ILC =
 		Colormap.updatePreviews(Settings.initialColorBins)
 		Colormap.setCurrent(0)
 
-		for i in [0..32]
+		for i in [0..2]
 			loadChunk(i)
 
 
@@ -232,11 +238,11 @@ window.ILC =
 			@naics_trends = data.naics_trends
 			console.log 'NAAAAICS', @naics_trends
 
-		res = HTTP.blocking 'GET', @datapath(dataset) + '/naics-list.json'
+		res = HTTP.blocking 'GET', @datapath() + '/naics-list.json'
 		res.success (data) =>
 			@naics_list = data.naics_list
 
-		res = HTTP.blocking 'GET',  @datapath(dataset) + '/json/brownfields.geojson'
+		res = HTTP.blocking 'GET',  @datapath(dataset) + '/brownfields.geojson'
 		res.success (data) =>
 			@layers.brownfields = L.geoJson data,
 				pointToLayer: (feature, latlng) ->
