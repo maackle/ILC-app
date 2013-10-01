@@ -1,3 +1,4 @@
+import csv
 import os
 import re
 import sys
@@ -210,16 +211,16 @@ def task_process_demography(*project_names):
                     query = """
                         INSERT INTO {target_table} (gid, {name_list}) 
                         SELECT
-                            ROWID,
+                            {pk},
                             {assignment_list}
                         FROM (
                             SELECT 
-                                raw.ROWID,
+                                raw.{pk},
                                 census.*,
                                 ST_Area( ST_Intersection( circle_buffer, census.tract ) ) / census.tract_area AS density
                             FROM (
                                 SELECT
-                                    ROWID,
+                                    {pk},
                                     ST_Buffer( ST_Transform( ST_Centroid(geom), {equal_area_srid} ), 1609*{buffer_mi} ) as circle_buffer
                                 FROM {raw_industrial_table}
                                 LIMIT {limit} OFFSET {offset}
@@ -233,8 +234,9 @@ def task_process_demography(*project_names):
                             ) as census
                             ON ST_Intersects( raw.circle_buffer, census.tract )
                         )
-                        GROUP BY ROWID;
+                        GROUP BY {pk};
                     """.format(
+                        pk=settings.SPATIALITE_PK_NAME,
                         target_table=target_table,
                         local_demography_table=project.raw_demography_table,
                         raw_industrial_table=project.raw_industrial_table,
@@ -247,7 +249,7 @@ def task_process_demography(*project_names):
                         offset=offset,
                     )
                     cur = conn.execute(query)
-                    print "rows inserted:", cur.rowcount, "( offset", offset, ")"
+                    print offset, '... '
                     offset += limit
                     conn.commit()
 
@@ -339,8 +341,10 @@ def task_generate_converted(*project_names):
 
 
 def task_generate_industrial(*project_names):
+
     create_industrial_table(*project_names)
     setup_project_directories()
+    
     with db_connect() as conn:
         for proj_name in project_names:
             project = get_project(proj_name)
@@ -349,22 +353,21 @@ def task_generate_industrial(*project_names):
             race_names = [r['name'] for r in project.demography['race_categories']]
             occupation_names = [o['name'] for o in project.demography['occupation_categories']]
 
-            industrial_features = []
-
             query_template = """
-                SELECT *, ROWID as gid, AsText(geom) as geom_wkt from {industrial} i
+                SELECT *, AsText(geom) as geom_wkt from {industrial} i
             """
             if settings.USE_DEMOGRAPHY:
-                query_template += " JOIN {race} r ON r.gid = i.gid JOIN {occupation} o ON o.gid = i.gid "
+                query_template += " LEFT JOIN {race} r ON r.gid = i.gid LEFT JOIN {occupation} o ON o.gid = i.gid "
 
             query_template += " ORDER BY size_metric DESC "
 
             query = query_template.format(
-                    industrial=project.industrial_table,
-                    race=project.race_table,
-                    occupation=project.occupation_table,
-                    chunk_size=settings.FEATURE_CHUNK_SIZE,
-                )
+                # pk=settings.SPATIALITE_PK_NAME,
+                industrial=project.industrial_table,
+                race=project.race_table,
+                occupation=project.occupation_table,
+                chunk_size=settings.FEATURE_CHUNK_SIZE,
+            )
 
             cur = conn.execute(query)
             chunk_num = 0
@@ -381,6 +384,8 @@ def task_generate_industrial(*project_names):
             while chunk:
 
                 with open(os.path.join(json_dir, 'industrial-{0}.geojson'.format(chunk_num)), 'w') as f:
+
+                    industrial_features = []
 
                     for row in chunk:
                         properties = {
@@ -420,8 +425,90 @@ def task_generate_industrial(*project_names):
                 chunk = cur.fetchmany(settings.FEATURE_CHUNK_SIZE)
                 chunk_num += 1
 
+def task_generate_naics(*project_names):
+    # Generate industry employment data from 3 files
+    # countywide and nationwide data are per-NAICS
+    # statewide data is only the total across ALL NAICS codes
+    YEAR_START = 1990
+    NAICS_COLUMN = 'industry_code'
+    FIPS_COLUMN = 'area_fips'
+    FIRST_YEAR_COLUMN = 'fyear'
+    NA_VALUE = 'NA'
+
+    for proj_name in project_names:
+        project = get_project(proj_name)
+
+        def parseCSV(name, path):
+            data = {}
+            columns = {}
+            years = []
+            is_statewide = name == 'statewide'
+            with open(path, 'rU') as csvfile:
+                reader = csv.reader(csvfile, delimiter=',', quotechar='"')
+                head = reader.next()
+
+                # get indices of columns
+                for i, v in enumerate(head):
+                    columns[v] = i
+                
+                # get consecutive years
+                for y in xrange(YEAR_START, sys.maxint):
+                    if str(y) in columns:
+                        years.append(y)
+                    else:
+                        break
+
+                for row in reader:
+
+                    def get(column_name):
+                        return row[columns[column_name]]
+
+                    if is_statewide:
+                        use_row = project.fips_list[0][0:2] == get(FIPS_COLUMN)[0:2]
+                    elif name == 'nationwide':
+                        use_row = True
+                    else:
+                        use_row = get(FIPS_COLUMN) in project.fips_list
+
+                    if use_row:
+
+                        code = get(NAICS_COLUMN).strip()
+                        base_year = get(FIRST_YEAR_COLUMN)
+                        first_nonnull_year = None
+                        if is_statewide or len(code) == 4:
+                            values = []
+                            for year in years:
+                                value = get(str(year))
+                                if value != NA_VALUE:
+                                    value = float(value)
+                                    if first_nonnull_year is None:
+                                        first_nonnull_year = int(year)
+                                else:
+                                    value = None
+                                values.append(value)
+                            if first_nonnull_year is not None:
+                                assert(first_nonnull_year == int(base_year))  # sanity
+                                base_year_value = float(get(base_year))
+                                emp_growth = []
+                                for year, value in zip(years, values):
+                                    ratio = None if value is None else value / base_year_value 
+                                    emp_growth.append({'year': year, 'value': ratio})
+                                data[code] = {
+                                    'base_year': base_year,
+                                    'emp_initial': base_year_value,
+                                    'emp_growth': emp_growth,
+                                }
+            return data
 
 
+        data = {}
+
+        for name, path in settings.naics_csv.items():
+            data[name] = parseCSV(name, os.path.join(settings.RAW_DATA_DIR, path))
+
+        with open(os.path.join(project.app_data_dir(), 'naics-trends.json'), 'w') as f:
+            print 'writing NAICS data to', f
+            f.write(json.dumps({'naics_trends': data}))
 
 def setup_project_directories():
     lazy_mkdir(settings.APP_DATA_DIR)  # main project dir
@@ -473,6 +560,7 @@ def main():
         'process-demography': task_process_demography,
         'generate-industrial': task_generate_industrial,
         'generate-converted': task_generate_converted,
+        'generate-naics': task_generate_naics,
         'kokoromi': task_kokoromi,
     }
 

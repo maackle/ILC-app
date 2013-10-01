@@ -39,24 +39,6 @@ window.swatches = for raw in [orange_red, yellow_green_blue, red_yellow_green]
 
 noDataColor = window.Settings.noDataColor
 
-window.convertedColors = {
-	'SFR': 'rgb(0, 200, 0)',
-	'MFR': 'rgb(0, 100, 0)',
-	'COM': 'rgb(255, 0, 0)',
-	'OFF': 'rgb(0, 0, 200)',
-	'OTH': 'rgb(200, 0, 200)',
-	# 'NON': noDataColor,
-}
-
-window.convertedCategories = {
-	'SFR': 'Single Family Residential',
-	'MFR': 'Multi Family Residential',
-	'COM': 'Commercial',
-	'OFF': 'Office',
-	'OTH': 'Other',
-	# 'NON': 'No Data',
-}
-
 # TODO: move to own file, or rename this one appropriately
 races7 = '''255, 255, 179; 141, 211, 199; 190, 186, 218; 251, 128, 114; 128, 177, 211; 253, 180, 98; 179, 222, 105;'''
 

@@ -12,7 +12,6 @@ class MultiPolygonCollection
 			mp = new @polygonClass(feature)
 			@items[feature.properties.gid] = mp
 			@L.addLayer mp.L
-		console.log "LL", @L
 
 
 window.MultiPolygonCollection = MultiPolygonCollection

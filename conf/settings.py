@@ -1,7 +1,7 @@
 from os.path import *
 
 RAW_DATA_DIR = abspath(join(dirname(__file__), '../rawdata'))
-APP_DATA_DIR = abspath(join(dirname(__file__), '../frontend/data'))
+APP_DATA_DIR = abspath(join(dirname(__file__), '../frontend/www/data'))
 
 EQUAL_AREA_SRID = 2163
 GEOGRAPHIC_SRID = 4326
@@ -10,7 +10,7 @@ SPATIALITE_DB_FILE = 'db.sqlite'
 SPATIALITE_ENCODING = 'ASCII'
 SPATIALITE_GEOMETRY_COLUMN_NAME = 'geom'
 
-SPATIALITE_PK_NAME = 'GID'
+SPATIALITE_PK_NAME = 'PK_UID'
 APP_PK_NAME = 'gid'
 
 BROWNFIELDS_TABLE = '_G_brownfields'
@@ -19,16 +19,10 @@ DEMOGRAPHY_TABLE = '_G_demography'
 
 USE_DEMOGRAPHY = True
 FEATURE_CHUNK_SIZE = 1000  # How many features go into a single geojson file?
-BACKEND_CHUNK_SIZE = 50
+BACKEND_CHUNK_SIZE = 250   # break up intensive SQL insertions into batches of this size
 
 
 global_datasets = {
-    # settings.BROWNFIELDS_TABLE: 'brownfields/GEODATA_Featureclass_MAR2013',
-    # 'census_tracts': {
-    #     'table': settings.CENSUS_TABLE,
-    #     'path': 'census_tracts/Mecklenburg_CensusTracts',
-    #     'srid': settings.GEOGRAPHIC_SRID,
-    # },
     'counties': {
         'table': COUNTIES_TABLE,
         'path': 'nationaldata/Counties',
@@ -39,6 +33,12 @@ global_datasets = {
         'path': 'nationaldata/TRACT_ACS_07_11-2163',
         'srid': EQUAL_AREA_SRID,
     },
+}
+
+naics_csv = {
+    'nationwide': 'nationaldata/NAICS_BLS/mfg_clean_allmfg_us.csv',
+    'statewide': 'nationaldata/NAICS_BLS/mfg_clean_allmfg_st.csv',
+    'countywide': 'nationaldata/NAICS_BLS/mfg_clean_allmfg_co.csv',
 }
 
 

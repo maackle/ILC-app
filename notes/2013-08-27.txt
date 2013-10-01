@@ -1,7 +1,5 @@
 
-
-- which occupation and race columns do we want to show?
-	- N will send
+-------------------------
 
 - use first 5 of Geo_FIPS as state + county (try using GEOID10)
 - can use CBSA to figure out FIPS list
@@ -49,3 +47,9 @@ allow "verb" for links
 	- bidirectional or directional
 
 most fields are optional
+
+----------------------------------------------
+
+
+- which occupation and race columns do we want to show?
+	- N will send

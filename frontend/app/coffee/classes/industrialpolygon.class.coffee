@@ -75,6 +75,8 @@ class IndustrialPolygon extends Feature2D
 		@naics4 = props.naics.toString().substr(0,4)
 		@naics = @naics4
 
+		@properties = data.properties  # TODO: this is the new format.  Migrate here.
+
 		coords = geom.coordinates
 		super(coords)
 
@@ -87,6 +89,7 @@ class IndustrialPolygon extends Feature2D
 			occupation_total = (v for i, v of occupation).reduce( (a,b) -> a + b )
 			raceResidual = 0.0
 			raceThreshold = 0.02
+			race['other'] = 0.0 if not ('other' in race)
 			for name, v of race
 				race[name] = v / race_total
 			for name, v of race
@@ -101,9 +104,8 @@ class IndustrialPolygon extends Feature2D
 			race = {}
 			occupation = {}
 
-		@demography =
-			race: race
-			occupation: occupation
+		props.demography.race = race
+		props.demography.occupation = occupation
 
 		@L
 		.on 'click', (e)=>

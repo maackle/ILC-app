@@ -21,7 +21,8 @@ window.Settings =
 	panOnActivate: true
 
 	useLocalData: false
-	useDemography: false  # don't care about demography for now
+	useDemography: true  # don't care about demography for now
+	requireDemography: true  # don't show features without non-null demography (race at least) data
 	switchLatLng: true  # if incoming polygon data is longitude, latitude
 
 	baseStyle: ->
@@ -39,6 +40,43 @@ window.Settings =
 		fillOpacity: 1.0
 		weight: 2
 		opacity: 1.0
+
+	colors:
+		race: [
+			'rgb(255, 255, 179)'
+			'rgb(141, 211, 199)'
+			'rgb(190, 186, 218)'
+			'rgb(251, 128, 114)'
+			'rgb(128, 177, 211)'
+			'rgb(253, 180, 98)'
+			'rgb(179, 222, 105)'
+		]
+		occupation: [
+			'rgb(255, 255, 179)'
+			'rgb(141, 211, 199)'
+			'rgb(190, 186, 218)'
+			'rgb(251, 128, 114)'
+			'rgb(128, 177, 211)'
+			'rgb(253, 180, 98)'
+			'rgb(179, 222, 105)'
+		]
+
+Settings.convertedColors =
+	'SFR': 'rgb(0, 200, 0)',
+	'MFR': 'rgb(0, 100, 0)',
+	'COM': 'rgb(255, 0, 0)',
+	'OFF': 'rgb(0, 0, 200)',
+	'OTH': 'rgb(200, 0, 200)',
+	'NON': Settings.noDataColor,
+
+Settings.convertedCategories =
+	'SFR': 'Single Family Residential',
+	'MFR': 'Multi Family Residential',
+	'COM': 'Commercial',
+	'OFF': 'Office',
+	'OTH': 'Other',
+	'NON': 'No Data',
+
 
 
 window.lerp = (a, b, f) ->

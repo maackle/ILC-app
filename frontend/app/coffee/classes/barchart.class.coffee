@@ -23,7 +23,6 @@ class StackedBarChart
 
 
 		@layout = (data) ->
-
 			sum = data.map((d) -> d.population).reduce (a, b) -> a + b
 			prev = 0
 			out = for d in data
@@ -39,7 +38,7 @@ class StackedBarChart
 
 		i = 0
 		for key, slice of @legendData
-			@legendData[key].color = makeColorString(window.raceColors[i++])
+			@legendData[key].color = Settings.colors.race[i++]
 		legend = @$container.find('ul.legend')
 		for key, slice of @legendData
 			li = $("""
@@ -50,8 +49,8 @@ class StackedBarChart
 			legend.append li
 		@$container.append('<br class="clear"/>')
 
-	setFeature: (f)->
-		values = for k, v of f.demography[@name]
+	setFeature: (f) ->
+		values = for k, v of f.properties.demography[@name]
 			if v == 0
 				@$container.find("li.#{k}").fadeOut()
 			else

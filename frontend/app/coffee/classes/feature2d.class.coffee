@@ -10,7 +10,7 @@ class Feature2D extends Feature
 						points = ([p[1], p[0]] for p in points)
 					else
 						points = [points[1], points[0]] 
-		
+
 		@components = coordinates.map (p)->
 			new Polygon(p)
 

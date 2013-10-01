@@ -91,7 +91,8 @@
     },
     panOnActivate: true,
     useLocalData: false,
-    useDemography: false,
+    useDemography: true,
+    requireDemography: true,
     switchLatLng: true,
     baseStyle: function() {
       return {
@@ -114,7 +115,29 @@
         weight: 2,
         opacity: 1.0
       };
+    },
+    colors: {
+      race: ['rgb(255, 255, 179)', 'rgb(141, 211, 199)', 'rgb(190, 186, 218)', 'rgb(251, 128, 114)', 'rgb(128, 177, 211)', 'rgb(253, 180, 98)', 'rgb(179, 222, 105)'],
+      occupation: ['rgb(255, 255, 179)', 'rgb(141, 211, 199)', 'rgb(190, 186, 218)', 'rgb(251, 128, 114)', 'rgb(128, 177, 211)', 'rgb(253, 180, 98)', 'rgb(179, 222, 105)']
     }
+  };
+
+  Settings.convertedColors = {
+    'SFR': 'rgb(0, 200, 0)',
+    'MFR': 'rgb(0, 100, 0)',
+    'COM': 'rgb(255, 0, 0)',
+    'OFF': 'rgb(0, 0, 200)',
+    'OTH': 'rgb(200, 0, 200)',
+    'NON': Settings.noDataColor
+  };
+
+  Settings.convertedCategories = {
+    'SFR': 'Single Family Residential',
+    'MFR': 'Multi Family Residential',
+    'COM': 'Commercial',
+    'OFF': 'Office',
+    'OTH': 'Other',
+    'NON': 'No Data'
   };
 
   window.lerp = function(a, b, f) {
@@ -173,22 +196,6 @@
 
   noDataColor = window.Settings.noDataColor;
 
-  window.convertedColors = {
-    'SFR': 'rgb(0, 200, 0)',
-    'MFR': 'rgb(0, 100, 0)',
-    'COM': 'rgb(255, 0, 0)',
-    'OFF': 'rgb(0, 0, 200)',
-    'OTH': 'rgb(200, 0, 200)'
-  };
-
-  window.convertedCategories = {
-    'SFR': 'Single Family Residential',
-    'MFR': 'Multi Family Residential',
-    'COM': 'Commercial',
-    'OFF': 'Office',
-    'OTH': 'Other'
-  };
-
   races7 = '255, 255, 179; 141, 211, 199; 190, 186, 218; 251, 128, 114; 128, 177, 211; 253, 180, 98; 179, 222, 105;';
 
   window.raceColors = parseLine(races7);
@@ -246,7 +253,7 @@
       _ref = this.legendData;
       for (key in _ref) {
         slice = _ref[key];
-        this.legendData[key].color = makeColorString(window.raceColors[i++]);
+        this.legendData[key].color = Settings.colors.race[i++];
       }
       legend = this.$container.find('ul.legend');
       _ref1 = this.legendData;
@@ -262,7 +269,7 @@
       var k, v, values;
       values = (function() {
         var _ref, _results;
-        _ref = f.demography[this.name];
+        _ref = f.properties.demography[this.name];
         _results = [];
         for (k in _ref) {
           v = _ref[k];
@@ -456,7 +463,6 @@
           return rgb;
         }
       }
-      console.warn("value too low: " + val);
       return this.levels[this.levels.length - 1][1];
     };
 
@@ -519,6 +525,43 @@
   })();
 
   window.Colormap = Colormap;
+
+  Polygon = (function() {
+    Polygon.prototype.id = null;
+
+    Polygon.prototype.L = null;
+
+    Polygon._holesWarning = false;
+
+    function Polygon(coords) {
+      if (typeof coords[0][0] === 'object') {
+        if (!Polygon._holesWarning) {
+          console.warn("cannot use polygon with holes, using exterior ring only.");
+          Polygon._holesWarning = true;
+        }
+        coords = coords[0];
+      }
+      this.coords = coords.slice(0);
+      this.L = new L.Polygon(coords);
+    }
+
+    Polygon.prototype.centroid = function() {
+      var len, ret, sum;
+      len = this.coords.length;
+      sum = this.coords.reduce(function(a, b) {
+        return [a[0] + b[0], a[1] + b[1]];
+      });
+      ret = sum.map(function(x) {
+        return x / len;
+      });
+      return ret;
+    };
+
+    return Polygon;
+
+  })();
+
+  window.Polygon = Polygon;
 
   Feature = (function() {
     function Feature() {}
@@ -677,6 +720,7 @@
       this.naics3 = props.naics.toString().substr(0, 3);
       this.naics4 = props.naics.toString().substr(0, 4);
       this.naics = this.naics4;
+      this.properties = data.properties;
       coords = geom.coordinates;
       IndustrialPolygon.__super__.constructor.call(this, coords);
       this.L.obj = this;
@@ -707,6 +751,9 @@
         });
         raceResidual = 0.0;
         raceThreshold = 0.02;
+        if (!(__indexOf.call(race, 'other') >= 0)) {
+          race['other'] = 0.0;
+        }
         for (name in race) {
           v = race[name];
           race[name] = v / race_total;
@@ -729,10 +776,8 @@
         race = {};
         occupation = {};
       }
-      this.demography = {
-        race: race,
-        occupation: occupation
-      };
+      props.demography.race = race;
+      props.demography.occupation = occupation;
       this.L.on('click', function(e) {
         return IndustrialPolygon.setActive(_this, e.originalEvent);
       }).on('mouseover', function(e) {
@@ -770,10 +815,16 @@
 
     function ConvertedPolygon(data) {
       ConvertedPolygon.__super__.constructor.call(this, data.geometry.coordinates);
+      this.convertedTo = (function() {
+        switch (data.properties.twlsm.trim().toUpperCase()) {
+          case 'R':
+            return '';
+        }
+      })();
       this.L.setStyle({
         fillOpacity: 0,
         weight: 3,
-        color: window.convertedColors[data.converted_to] || window.convertedColors['NON'],
+        color: Settings.convertedColors[data.converted_to] || Settings.convertedColors['NON'],
         fillColor: null,
         clickable: false
       });
@@ -793,7 +844,8 @@
     }
 
     MultiPolygonCollection.prototype.addFeatures = function(features) {
-      var feature, mp, _i, _len;
+      var feature, mp, _i, _len, _results;
+      _results = [];
       for (_i = 0, _len = features.length; _i < _len; _i++) {
         feature = features[_i];
         if (typeof feature.geometry === 'string') {
@@ -801,9 +853,9 @@
         }
         mp = new this.polygonClass(feature);
         this.items[feature.properties.gid] = mp;
-        this.L.addLayer(mp.L);
+        _results.push(this.L.addLayer(mp.L));
       }
-      return console.log("LL", this.L);
+      return _results;
     };
 
     return MultiPolygonCollection;
@@ -845,7 +897,7 @@
       return this._pxScale;
     },
     datapath: function(dataset) {
-      return "old-data/" + dataset;
+      return "data/" + dataset;
     },
     initialize: function(opts) {
       var dataset, limit;
@@ -1019,7 +1071,7 @@
       return this.currentRasterKey = id;
     },
     addPolygons: function(dataset, limit) {
-      var calculateStuff, limit_str, map, res, url_converted, url_industrial,
+      var calculateStuff, limit_str, loadChunk, map, _i, _results,
         _this = this;
       calculateStuff = function(features) {
         var riskRange;
@@ -1029,37 +1081,66 @@
         ILC.resetLegend();
         return _this.updateFeatures();
       };
+      loadChunk = function(i) {
+        var res_c, res_i, url_converted, url_industrial;
+        url_industrial = _this.datapath(dataset) + ("/json/industrial-" + i + ".geojson");
+        url_converted = _this.datapath(dataset) + ("/json/converted-" + i + ".geojson");
+        res_i = HTTP.call('GET', url_industrial);
+        res_i.success(function(data) {
+          var bounds, f, feats;
+          if (Settings.requireDemography) {
+            feats = (function() {
+              var _i, _len, _ref, _results;
+              _ref = data.features;
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                f = _ref[_i];
+                if (f.properties.demography.race.multi != null) {
+                  _results.push(f);
+                }
+              }
+              return _results;
+            })();
+          } else {
+            feats = data.features;
+          }
+          _this.industrial.addFeatures(feats);
+          if (true) {
+            bounds = _this.industrial.L.getBounds();
+            map.fitBounds(bounds);
+          }
+          ILC.vectorLayers['industrial-parcels'] = _this.industrial.L;
+          _this.updateVisibleFeatures();
+          return calculateStuff(_this.visibleIndustrialFeatures);
+        });
+        res_c = HTTP.call('GET', url_converted);
+        return res_c.success(function(data) {
+          _this.converted.addFeatures(data.features);
+          return ILC.vectorLayers['converted-parcels'] = _this.converted.L;
+        });
+      };
       map = this.map;
       limit_str = limit != null ? '?limit=' + limit : '';
-      url_industrial = this.datapath(dataset) + '/json/industrial-0.geojson';
-      url_converted = this.datapath(dataset) + '/json/converted-0.geojson';
-      res = HTTP.blocking('GET', url_industrial);
-      res.success(function(data) {
-        var bounds;
-        _this.industrial = new MultiPolygonCollection(IndustrialPolygon);
-        _this.industrial.addFeatures(data.features);
-        bounds = _this.industrial.L.getBounds();
-        map.fitBounds(bounds);
-        _this.industrial.L.addTo(map);
-        ILC.vectorLayers['industrial-parcels'] = _this.industrial.L;
-        _this.updateVisibleFeatures();
-        return calculateStuff(_this.visibleIndustrialFeatures);
-      });
-      res = HTTP.blocking('GET', url_converted);
-      return res.success(function(data) {
-        _this.converted = new MultiPolygonCollection(ConvertedPolygon);
-        _this.converted.addFeatures(data.features);
-        return ILC.vectorLayers['converted-parcels'] = _this.converted.L;
-      });
+      this.industrial = new MultiPolygonCollection(IndustrialPolygon);
+      this.converted = new MultiPolygonCollection(ConvertedPolygon);
+      this.industrial.L.addTo(map);
+      Colormap.updatePreviews(Settings.initialColorBins);
+      Colormap.setCurrent(0);
+      _results = [];
+      for (i = _i = 0; _i <= 32; i = ++_i) {
+        _results.push(loadChunk(i));
+      }
+      return _results;
     },
     loadData: function(dataset) {
       var $opt, $optgroup, code, code3, codes, groups, list, name, res, title, _i, _j, _len, _len1,
         _this = this;
-      res = HTTP.blocking('GET', this.datapath(dataset) + '/json/development-naics-trends.json');
+      res = HTTP.blocking('GET', this.datapath(dataset) + '/naics-trends.json');
       res.success(function(data) {
-        return _this.naics_trends = data.naics_trends;
+        _this.naics_trends = data.naics_trends;
+        return console.log('NAAAAICS', _this.naics_trends);
       });
-      res = HTTP.blocking('GET', this.datapath(dataset) + '/json/naics-list.json');
+      res = HTTP.blocking('GET', '/data/naics-list.json');
       res.success(function(data) {
         return _this.naics_list = data.naics_list;
       });
@@ -1146,7 +1227,7 @@
         lines: {
           county: null,
           state: null,
-          total: null
+          nation: null
         },
         svg: null,
         xAxis: function() {
@@ -1184,7 +1265,7 @@
           }).y(function(d) {
             return _this.y(d.value);
           });
-          this.lines.total = d3.svg.line().x(function(d) {
+          this.lines.nation = d3.svg.line().x(function(d) {
             return _this.x(d.year);
           }).y(function(d) {
             return _this.y(d.value);
@@ -1199,74 +1280,80 @@
           };
           this.svg.append('path').attr(lineStyle('county'));
           this.svg.append('path').attr(lineStyle('state'));
-          this.svg.append('path').attr(lineStyle('total'));
+          this.svg.append('path').attr(lineStyle('nation'));
           this.svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + (height - margin.bottom - margin.top) + ")").call(this.xAxis());
           return this.svg.append("g").attr("class", "y axis").call(this.yAxis());
         },
         setNAICS: function(naics_code) {
-          var baseIndex, baseX, baseYear, countywide, d, data, datum, extent, k, max, meta, min, naicsTitle, statewide, which, _i, _len;
+          var baseIndex, baseX, baseYear, countywide, countywide_base_year, d, data, datum, extent, k, max, meta, min, naicsTitle, nationwide, statewide, statewide_base_year, which, _i, _len;
           if ((naics_code != null) && naics_code > 0) {
             this.show();
+            naicsTitle = ILC.naics_list[naics_code];
+            this.$container().find('.info .naics-title').text("" + naics_code + " - " + naicsTitle);
+            this.$container().find('.naics').text("" + naics_code);
+            this.$container().find('.info .naics-filter-select').click(function(e) {
+              $('.industry-select').val(naics_code);
+              $('.industry-select').trigger("liszt:updated");
+              ILC.currentNAICS3 = naics_code.substr(0, 3);
+              ILC.updateVisibleFeatures();
+              return false;
+            });
+            console.log(ILC.naics_trends);
+            countywide = ILC.naics_trends.countywide[naics_code];
+            nationwide = ILC.naics_trends.nationwide[naics_code];
+            statewide = ILC.naics_trends.statewide["31-33"];
+            data = {
+              county: countywide != null ? countywide.emp_growth : [],
+              state: statewide != null ? statewide.emp_growth : [],
+              nation: nationwide != null ? nationwide.emp_growth : []
+            };
+            countywide_base_year = countywide != null ? countywide.base_year : null;
+            statewide_base_year = statewide != null ? statewide.base_year : null;
+            meta = {
+              county: {
+                baseYear: countywide_base_year
+              },
+              state: {
+                baseYear: statewide_base_year
+              },
+              nation: {
+                baseYear: 1990
+              }
+            };
+            baseYear = Math.max(countywide_base_year, statewide_base_year);
+            baseIndex = baseYear - 1990;
+            baseX = this.x(baseYear);
+            min = 999;
+            max = -999;
+            for (k in data) {
+              datum = data[k];
+              if (datum != null) {
+                for (_i = 0, _len = datum.length; _i < _len; _i++) {
+                  d = datum[_i];
+                  if (baseIndex > 0) {
+                    d.value /= datum[baseIndex].value;
+                  }
+                  if (d.value < min) {
+                    min = d.value;
+                  }
+                  if (d.value > max) {
+                    max = d.value;
+                  }
+                }
+              }
+            }
+            extent = [0, max];
+            this.y.domain(extent);
+            this.svg.select('.y.axis').transition().duration(777).attr('transform', "translate(" + baseX + ", 0)").call(this.yAxis());
+            for (which in data) {
+              datum = data[which];
+              console.debug(data, this.svg);
+              this.svg.select("path." + which).datum(datum).transition().duration(777).attr('d', this.lines[which]);
+            }
+            return this.show();
           } else {
             this.hide();
-            return;
           }
-          naicsTitle = ILC.naics_list[naics_code];
-          this.$container().find('.info .naics-title').text("" + naics_code + " - " + naicsTitle);
-          this.$container().find('.naics').text("" + naics_code);
-          this.$container().find('.info .naics-filter-select').click(function(e) {
-            $('.industry-select').val(naics_code);
-            $('.industry-select').trigger("liszt:updated");
-            ILC.currentNAICS3 = naics_code.substr(0, 3);
-            ILC.updateVisibleFeatures();
-            return false;
-          });
-          countywide = ILC.naics_trends.countywide[naics_code];
-          statewide = ILC.naics_trends.statewide[naics_code];
-          data = {
-            county: countywide.emp_growth,
-            state: statewide.emp_growth,
-            total: ILC.naics_trends.statewide_total.emp_growth
-          };
-          meta = {
-            county: {
-              baseYear: countywide.base_year
-            },
-            state: {
-              baseYear: statewide.base_year
-            },
-            total: {
-              baseYear: 1990
-            }
-          };
-          baseYear = Math.max(countywide.base_year, statewide.base_year);
-          baseIndex = baseYear - 1990;
-          baseX = this.x(baseYear);
-          min = 999;
-          max = -999;
-          for (k in data) {
-            datum = data[k];
-            for (_i = 0, _len = datum.length; _i < _len; _i++) {
-              d = datum[_i];
-              if (baseIndex > 0) {
-                d.value /= datum[baseIndex].value;
-              }
-              if (d.value < min) {
-                min = d.value;
-              }
-              if (d.value > max) {
-                max = d.value;
-              }
-            }
-          }
-          extent = [0, max];
-          this.y.domain(extent);
-          this.svg.select('.y.axis').transition().duration(777).attr('transform', "translate(" + baseX + ", 0)").call(this.yAxis());
-          for (which in data) {
-            datum = data[which];
-            this.svg.select("path." + which).datum(datum).transition().duration(777).attr('d', this.lines[which]);
-          }
-          return this.show();
         }
       },
       demography: {
@@ -1281,16 +1368,10 @@
             black: {
               label: 'Black'
             },
-            islander: {
-              label: 'Islander'
-            },
-            "native": {
-              label: 'Native American'
-            },
             asian: {
               label: 'Asian'
             },
-            mixed: {
+            multi: {
               label: 'Mixed'
             },
             other: {
@@ -1315,7 +1396,7 @@
             construction: {
               label: 'Construction'
             },
-            production: {
+            manufacturing: {
               label: 'Production'
             }
           }
@@ -1353,7 +1434,6 @@
             return f.risk();
           });
           data = this.layout(values);
-          console.log(IndustrialPolygon.activeFeature != null);
           if ((IndustrialPolygon.activeFeature != null)) {
             risk = IndustrialPolygon.activeFeature.risk();
             for (i in data) {
@@ -1447,38 +1527,6 @@
       return 'industrial-polygons-' + dataset;
     }
   };
-
-  Polygon = (function() {
-    Polygon.prototype.id = null;
-
-    Polygon.prototype.L = null;
-
-    function Polygon(coords) {
-      this.coords = coords.slice(0);
-      this.L = new L.Polygon(coords);
-    }
-
-    Polygon.prototype.centroid = function() {
-      var len, ret, sum;
-      len = this.coords.length;
-      sum = this.coords.reduce(function(a, b) {
-        return [a[0] + b[0], a[1] + b[1]];
-      });
-      ret = sum.map(function(x) {
-        return x / len;
-      });
-      return ret;
-    };
-
-    Polygon.makeList = function(coord_list) {
-      return coord_list.map(function(coords) {
-        return new Polygon(coords);
-      });
-    };
-
-    return Polygon;
-
-  })();
 
   $(function() {
     var abbr, color, geocoder, label, vec_btn_container, _ref;
@@ -1600,10 +1648,10 @@
       });
       return false;
     });
-    _ref = window.convertedCategories;
+    _ref = Settings.convertedCategories;
     for (abbr in _ref) {
       label = _ref[abbr];
-      color = window.convertedColors[abbr];
+      color = Settings.convertedColors[abbr];
       $('.legend-container.converted-parcels ul.legend').append("<li>\n	<div class=\"color\" style=\"border: 3px solid " + color + "\"></div>\n	<div class=\"label\">" + label + "</div>\n</li>");
     }
     HTTP.setup();
@@ -1613,7 +1661,7 @@
     console.log("here we go");
     return $(function() {
       return ILC.initialize({
-        dataset: 'meck',
+        dataset: 'cook',
         limit: 500
       });
     });

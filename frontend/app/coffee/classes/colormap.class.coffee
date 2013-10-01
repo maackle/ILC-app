@@ -78,7 +78,7 @@ class Colormap
 			[thresh, rgb] = lvl
 			if val >= thresh
 				return rgb
-		console.warn "value too low: #{val}"
+		# console.warn "value too low: #{val}"
 		return @levels[@levels.length-1][1]
 
 	getColorString: (val) ->

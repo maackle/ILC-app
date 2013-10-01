@@ -72,8 +72,9 @@ demography_race_fields = {
 meck = ProjectDefinition(
     name='meck',
     title='Mecklenburg County, North Carolina',
+    converted_parcels_shapefile='meck_rawdata/alreadyconverted_m_P',
     industrial_parcels={
-        'shapefile': 'still_industrial/meck-4326',
+        'shapefile': 'meck_rawdata/still_industrial_m_P',
         'probability_categories': (
             {
                 'rawname': 'pcnv_l',
@@ -93,7 +94,6 @@ meck = ProjectDefinition(
         ),
     },
     demography=settings.demography_categories,
-    converted_parcels_shapefile='alreadyconverted/meck-4326',
     raster_layers=(
         {
             'name': 'corridors-wedges',

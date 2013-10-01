@@ -38,6 +38,7 @@ module.exports = (grunt) ->
 						"<%= config.app %>/coffee/choropleth-swatches.coffee",
 						"<%= config.app %>/coffee/classes/barchart.class.coffee",
 						"<%= config.app %>/coffee/classes/colormap.class.coffee",
+						"<%= config.app %>/coffee/classes/polygon.class.coffee",
 						"<%= config.app %>/coffee/classes/feature.class.coffee",
 						"<%= config.app %>/coffee/classes/feature2d.class.coffee",
 						"<%= config.app %>/coffee/classes/industrialpolygon.class.coffee",
@@ -66,16 +67,16 @@ module.exports = (grunt) ->
 					ext: '.html'
 				}]
 
-		copy:
-		    dist:
-		        files: [
-		            {
-		                expand: true
-		                cwd: 'data'
-		                src: '**'
-		                dest: 'www/data'
-		            }
-		        ]
+		# copy:
+		#     dist:
+		#         files: [
+		#             {
+		#                 expand: true
+		#                 cwd: 'data'
+		#                 src: '**'
+		#                 dest: 'www/data'
+		#             }
+		#         ]
 
 	grunt.loadNpmTasks('grunt-contrib-coffee')
 	grunt.loadNpmTasks('grunt-contrib-copy')

@@ -32,7 +32,7 @@ window.ILC =
 		@_pxScale
 
 	datapath: (dataset) ->
-		"old-data/#{ dataset }"
+		"data/#{ dataset }"
 
 	initialize: (opts) ->
 		{dataset, limit} = opts
@@ -182,6 +182,29 @@ window.ILC =
 			ILC.resetLegend()
 			@updateFeatures()
 
+		loadChunk = (i) =>
+			url_industrial = @datapath(dataset) + "/json/industrial-#{i}.geojson"
+			url_converted = @datapath(dataset) + "/json/converted-#{i}.geojson"
+			res_i = HTTP.call 'GET', url_industrial
+			res_i.success (data) =>
+				if Settings.requireDemography
+					feats = (f for f in data.features when f.properties.demography.race.multi?)
+				else
+					feats = data.features
+				@industrial.addFeatures(feats)
+				if true  # TODO: do it if it's the first call to complete
+					bounds = @industrial.L.getBounds()
+					map.fitBounds(bounds) 
+				ILC.vectorLayers['industrial-parcels'] = @industrial.L
+				@updateVisibleFeatures()
+				calculateStuff(@visibleIndustrialFeatures)
+
+			res_c = HTTP.call 'GET', url_converted
+			res_c.success (data) =>
+				@converted.addFeatures(data.features)
+				ILC.vectorLayers['converted-parcels'] = @converted.L
+
+
 		map = @map
 		limit_str = 
 			if limit?
@@ -189,37 +212,31 @@ window.ILC =
 			else
 				''
 
-		url_industrial = @datapath(dataset) + '/json/industrial-0.geojson'
-		url_converted = @datapath(dataset) + '/json/converted-0.geojson'
-		res = HTTP.blocking 'GET', url_industrial #TODO: make async
-		res.success (data) =>
-			@industrial = new MultiPolygonCollection(IndustrialPolygon)
-			@industrial.addFeatures(data.features)
-			bounds = @industrial.L.getBounds()
-			map.fitBounds(bounds)
-			@industrial.L.addTo(map)
-			ILC.vectorLayers['industrial-parcels'] = @industrial.L
-			@updateVisibleFeatures()
-			calculateStuff(@visibleIndustrialFeatures)
+		@industrial = new MultiPolygonCollection(IndustrialPolygon)
+		@converted = new MultiPolygonCollection(ConvertedPolygon)
+		@industrial.L.addTo(map)
+		# @converted.L.addTo(@map)
 
-		res = HTTP.blocking 'GET', url_converted #TODO: make async
-		res.success (data) =>
-			@converted = new MultiPolygonCollection(ConvertedPolygon)
-			@converted.addFeatures(data.features)
-			ILC.vectorLayers['converted-parcels'] = @converted.L
-			# @converted.L.addTo(@map)
+		Colormap.updatePreviews(Settings.initialColorBins)
+		Colormap.setCurrent(0)
+
+		for i in [0..32]
+			loadChunk(i)
+
+
 
 	loadData: (dataset)->
 		# res = HTTP.blocking 'GET', '/api/charlotte/industrial/naics-trends'
-		res = HTTP.blocking 'GET', @datapath(dataset) + '/json/development-naics-trends.json'
+		res = HTTP.blocking 'GET',  @datapath(dataset) + '/naics-trends.json'
 		res.success (data) =>
 			@naics_trends = data.naics_trends
+			console.log 'NAAAAICS', @naics_trends
 
-		res = HTTP.blocking 'GET', @datapath(dataset) + '/json/naics-list.json'
+		res = HTTP.blocking 'GET', '/data/naics-list.json'
 		res.success (data) =>
 			@naics_list = data.naics_list
 
-		res = HTTP.blocking 'GET', @datapath(dataset) + '/json/brownfields.geojson'
+		res = HTTP.blocking 'GET',  @datapath(dataset) + '/json/brownfields.geojson'
 		res.success (data) =>
 			@layers.brownfields = L.geoJson data,
 				pointToLayer: (feature, latlng) ->
@@ -284,7 +301,7 @@ window.ILC =
 			lines:
 				county: null
 				state: null
-				total: null
+				nation: null
 			svg: null
 
 			xAxis: ->
@@ -330,7 +347,7 @@ window.ILC =
 				@lines.state = d3.svg.line()
 					.x( (d) => @x(d.year) )
 					.y( (d) => @y(d.value) )
-				@lines.total = d3.svg.line()
+				@lines.nation = d3.svg.line()
 					.x( (d) => @x(d.year) )
 					.y( (d) => @y(d.value) )
 
@@ -352,7 +369,7 @@ window.ILC =
 
 				@svg.append('path').attr(lineStyle('county'))
 				@svg.append('path').attr(lineStyle('state'))
-				@svg.append('path').attr(lineStyle('total'))
+				@svg.append('path').attr(lineStyle('nation'))
 
 				@svg.append("g")
 					.attr("class", "x axis")
@@ -374,65 +391,73 @@ window.ILC =
 
 				if naics_code? && naics_code > 0
 					@show()
+
+					naicsTitle = ILC.naics_list[naics_code]
+
+					@$container().find('.info .naics-title').text("#{naics_code} - #{naicsTitle}")
+					@$container().find('.naics').text("#{naics_code}")
+					@$container().find('.info .naics-filter-select').click (e) ->
+						$('.industry-select').val(naics_code)
+						$('.industry-select').trigger("liszt:updated");
+						ILC.currentNAICS3 = naics_code.substr(0, 3)
+						ILC.updateVisibleFeatures()
+						false
+
+					console.log ILC.naics_trends
+
+					countywide = ILC.naics_trends.countywide[naics_code]
+					nationwide = ILC.naics_trends.nationwide[naics_code]
+
+					# statewide is different -- it's a total across all industries
+					statewide = ILC.naics_trends.statewide["31-33"]
+
+					data =
+						county:   if countywide? then countywide.emp_growth else []
+						state:    if statewide? then statewide.emp_growth else []
+						nation:    if nationwide? then nationwide.emp_growth else []
+
+					countywide_base_year = if countywide? then countywide.base_year else null
+					statewide_base_year = if statewide? then statewide.base_year else null
+
+					meta = 
+						county:
+							baseYear: countywide_base_year
+						state:
+							baseYear: statewide_base_year
+						nation:
+							baseYear: 1990
+
+					baseYear = Math.max(countywide_base_year, statewide_base_year)
+					# baseYear = parseInt(Math.random() * 20 + 1990)
+					baseIndex = baseYear - 1990
+					baseX = @x(baseYear)
+
+					min = 999
+					max = -999
+					for k, datum of data when datum?
+						for d in datum
+							if baseIndex > 0
+								d.value /= datum[baseIndex].value
+							if d.value < min then min = d.value
+							if d.value > max then max = d.value
+
+					extent = [0, max]
+					@y.domain(extent)
+
+					@svg.select('.y.axis').transition().duration(777)
+						.attr('transform', "translate(#{ baseX }, 0)")
+						.call(@yAxis())
+
+					for which, datum of data
+						console.debug data, @svg
+						@svg.select("path.#{ which }")
+							.datum(datum)
+							.transition().duration(777)
+							.attr('d', @lines[which])
+					@show()
 				else
 					@hide()
 					return
-
-				naicsTitle = ILC.naics_list[naics_code]
-
-				@$container().find('.info .naics-title').text("#{naics_code} - #{naicsTitle}")
-				@$container().find('.naics').text("#{naics_code}")
-				@$container().find('.info .naics-filter-select').click (e) ->
-					$('.industry-select').val(naics_code)
-					$('.industry-select').trigger("liszt:updated");
-					ILC.currentNAICS3 = naics_code.substr(0, 3)
-					ILC.updateVisibleFeatures()
-					false
-
-				countywide = ILC.naics_trends.countywide[naics_code]
-				statewide = ILC.naics_trends.statewide[naics_code]
-
-				data =
-					county:   countywide.emp_growth
-					state:    statewide.emp_growth
-					total:    ILC.naics_trends.statewide_total.emp_growth
-
-				meta = 
-					county:
-						baseYear: countywide.base_year
-					state:
-						baseYear: statewide.base_year
-					total:
-						baseYear: 1990
-
-				baseYear = Math.max(countywide.base_year, statewide.base_year)
-				# baseYear = parseInt(Math.random() * 20 + 1990)
-				baseIndex = baseYear - 1990
-				baseX = @x(baseYear)
-
-				min = 999
-				max = -999
-				for k, datum of data
-					for d in datum
-						if baseIndex > 0
-							d.value /= datum[baseIndex].value
-						if d.value < min then min = d.value
-						if d.value > max then max = d.value
-
-				extent = [0, max]
-				@y.domain(extent)
-
-				@svg.select('.y.axis').transition().duration(777)
-					.attr('transform', "translate(#{ baseX }, 0)")
-					.call(@yAxis())
-
-				for which, datum of data
-					@svg.select("path.#{ which }")
-						.datum(datum)
-						.transition().duration(777)
-						.attr('d', @lines[which])
-
-				@show()
 
 
 		demography:
@@ -450,6 +475,8 @@ window.ILC =
 						label: 'Asian'
 					multi:
 						label: 'Mixed'
+					other:
+						label: 'Other'
 
 			occupation: new StackedBarChart 
 				width: Settings.barGraphWidth
@@ -464,7 +491,7 @@ window.ILC =
 						label: 'Office'
 					construction:
 						label: 'Construction'
-					production:
+					manufacturing:
 						label: 'Production'
 
 		histogram:
@@ -491,7 +518,6 @@ window.ILC =
 
 				data = @layout(values) 
 
-				console.log IndustrialPolygon.activeFeature?
 				if(IndustrialPolygon.activeFeature?)
 					risk = IndustrialPolygon.activeFeature.risk()
 					d.active = d.x <= risk && risk <= d.x + d.dx for i, d of data
@@ -617,24 +643,24 @@ slugs =
 
 
 
-class Polygon
+# class Polygon
 
-	id: null
-	L: null
+# 	id: null
+# 	L: null
 
-	constructor: (coords) ->
-		@coords = coords[..]
-		@L = new L.Polygon(coords)
+# 	constructor: (coords) ->
+# 		@coords = coords[..]
+# 		@L = new L.Polygon(coords)
 
-	centroid: ->
-		len = @coords.length
-		sum = @coords.reduce (a, b)->
-			[a[0] + b[0], a[1] + b[1]]
-		ret = sum.map (x)->
-			x / len
-		ret
+# 	centroid: ->
+# 		len = @coords.length
+# 		sum = @coords.reduce (a, b)->
+# 			[a[0] + b[0], a[1] + b[1]]
+# 		ret = sum.map (x)->
+# 			x / len
+# 		ret
 
-	@makeList: (coord_list) ->
-		coord_list.map (coords)->
-			new Polygon(coords)
+# 	@makeList: (coord_list) ->
+# 		coord_list.map (coords)->
+# 			new Polygon(coords)
 

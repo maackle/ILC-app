@@ -109,8 +109,8 @@ $ ->
 				ILC.map.setView latlng, 14
 		false
 
-	for abbr, label of window.convertedCategories
-		color = window.convertedColors[abbr]
+	for abbr, label of Settings.convertedCategories
+		color = Settings.convertedColors[abbr]
 		$('.legend-container.converted-parcels ul.legend').append("""
 			<li>
 				<div class="color" style="border: 3px solid #{color}"></div>
@@ -128,6 +128,6 @@ $ ->
 	
 	$ ->
 		ILC.initialize
-			dataset: 'meck'
+			dataset: 'cook'
 			limit: 500
 		
