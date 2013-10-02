@@ -106,7 +106,6 @@ window.ILC =
 	resetLegend: ->
 		$('#legend .colormap').html('').append(@colormap().legendHTML())
 
-	# OPTIMIZE: only update features that were added
 	updateVisibleFeatures: ->
 		previousNum = @visibleIndustrialFeatures.length
 		group = ILC.industrial
@@ -127,8 +126,9 @@ window.ILC =
 		else
 			$('#feature-limit').html("showing #{numVisible} of #{num} features").fadeOut()
 		console.log 'num features visible:', @visibleIndustrialFeatures.length, num
-		if @colormap()? and @visibleIndustrialFeatures.length > previousNum
-			@updateFeatures()
+		
+		# TODO: OPTIMIZE: only update features that were added
+		@updateFeatures()
 
 		# deactivate active feature if it's no longer visible
 		# if IndustrialPolygon.activeFeature? and @visibleIndustrialFeatures.length <= previousNum

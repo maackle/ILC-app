@@ -1013,9 +1013,7 @@
         $('#feature-limit').html("showing " + numVisible + " of " + num + " features").fadeOut();
       }
       console.log('num features visible:', this.visibleIndustrialFeatures.length, num);
-      if ((this.colormap() != null) && this.visibleIndustrialFeatures.length > previousNum) {
-        this.updateFeatures();
-      }
+      this.updateFeatures();
       if ((IndustrialPolygon.activeFeature != null) && !(_ref1 = IndustrialPolygon.activeFeature.gid, __indexOf.call(this.visibleIndustrialFeatures.map(function(f) {
         if (f != null) {
           return f.gid;
