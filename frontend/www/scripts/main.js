@@ -84,6 +84,7 @@
     graphWidth: 180,
     barGraphWidth: 50,
     lineGraphHeight: 125,
+    maxVisibleFeatures: 1000,
     graphs: {
       trends: {
         colors: [[251, 128, 114], [100, 222, 60], [10, 10, 10]]
@@ -94,6 +95,7 @@
     useDemography: true,
     requireDemography: true,
     switchLatLng: true,
+    skipBrownfields: true,
     baseStyle: function() {
       return {
         weight: 1,
@@ -840,12 +842,12 @@
     function MultiPolygonCollection(polygonClass, features) {
       this.polygonClass = polygonClass;
       this.items = {};
+      this.sorted = [];
       this.L = new L.FeatureGroup();
     }
 
     MultiPolygonCollection.prototype.addFeatures = function(features) {
-      var feature, mp, _i, _len, _results;
-      _results = [];
+      var feature, mp, _i, _len;
       for (_i = 0, _len = features.length; _i < _len; _i++) {
         feature = features[_i];
         if (typeof feature.geometry === 'string') {
@@ -853,9 +855,14 @@
         }
         mp = new this.polygonClass(feature);
         this.items[feature.properties.gid] = mp;
-        _results.push(this.L.addLayer(mp.L));
+        this.sorted.push(mp);
+        this.L.addLayer(mp.L);
       }
-      return _results;
+      if (this.polygonClass === IndustrialPolygon) {
+        return this.sorted.sort(function(a, b) {
+          return b.size_metric - a.size_metric;
+        });
+      }
     };
 
     return MultiPolygonCollection;
@@ -940,8 +947,9 @@
         return ILC.graphs.histogram.updateActive();
       }).on('moveend', function(e) {
         if (_this.graphs.histogram.layout != null) {
-          return _this.graphs.histogram.update();
+          _this.graphs.histogram.update();
         }
+        return ILC.updateVisibleFeatures();
       }).on('zoomend', function(e) {
         var zoom;
         zoom = e.target._zoom;
@@ -977,36 +985,44 @@
       return $('#legend .colormap').html('').append(this.colormap().legendHTML());
     },
     updateVisibleFeatures: function() {
-      var f, group, id, previousNum, pxScale, _ref;
+      var f, group, mapBounds, num, numVisible, previousNum, pxScale, _i, _len, _ref, _ref1;
       previousNum = this.visibleIndustrialFeatures.length;
       group = ILC.industrial;
       group.L.clearLayers();
       pxScale = this.pxScale();
-      this.visibleIndustrialFeatures = (function() {
-        var _ref, _results;
-        _ref = group.items;
-        _results = [];
-        for (id in _ref) {
-          f = _ref[id];
-          if (!(f.size_metric * pxScale > Settings.minSizeMetric && (this.currentNAICS3 === null || f.naics3 === this.currentNAICS3))) {
-            continue;
-          }
+      mapBounds = ILC.map.getBounds();
+      num = 0;
+      this.visibleIndustrialFeatures = [];
+      _ref = group.sorted;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        f = _ref[_i];
+        if (!((f.risk() != null) && (this.currentNAICS3 === null || f.naics3 === this.currentNAICS3) && f.L.getBounds().intersects(mapBounds))) {
+          continue;
+        }
+        if (num < Settings.maxVisibleFeatures) {
           f.pxSizeEstimate = f.size_metric * pxScale;
           group.L.addLayer(f.L);
-          _results.push(f);
+          this.visibleIndustrialFeatures.push(f);
         }
-        return _results;
-      }).call(this);
+        num += 1;
+      }
+      numVisible = this.visibleIndustrialFeatures.length;
+      if (numVisible < num) {
+        $('#feature-limit').html("showing " + numVisible + " of " + num + " features").fadeIn();
+      } else {
+        $('#feature-limit').html("showing " + numVisible + " of " + num + " features").fadeOut();
+      }
+      console.log('num features visible:', this.visibleIndustrialFeatures.length, num);
       if ((this.colormap() != null) && this.visibleIndustrialFeatures.length > previousNum) {
         this.updateFeatures();
       }
-      if ((IndustrialPolygon.activeFeature != null) && !(_ref = IndustrialPolygon.activeFeature.gid, __indexOf.call(this.visibleIndustrialFeatures.map(function(f) {
+      if ((IndustrialPolygon.activeFeature != null) && !(_ref1 = IndustrialPolygon.activeFeature.gid, __indexOf.call(this.visibleIndustrialFeatures.map(function(f) {
         if (f != null) {
           return f.gid;
         } else {
           return null;
         }
-      }), _ref) >= 0)) {
+      }), _ref1) >= 0)) {
         IndustrialPolygon.clearActive();
         return ILC.graphs.hideNonHistogram();
       }
@@ -1083,7 +1099,7 @@
       return this.currentRasterKey = id;
     },
     addPolygons: function(dataset, limit) {
-      var calculateStuff, limit_str, loadChunk, map, _i, _results,
+      var calculateStuff, chunks, limit_str, loadConvertedChunk, loadIndustrialChunk, map,
         _this = this;
       calculateStuff = function(features) {
         var riskRange;
@@ -1093,12 +1109,11 @@
         ILC.resetLegend();
         return _this.updateFeatures();
       };
-      loadChunk = function(i) {
-        var res_c, res_i, url_converted, url_industrial;
+      loadIndustrialChunk = function(i) {
+        var res_i, url_industrial;
         url_industrial = _this.datapath(dataset) + ("/json/industrial-" + i + ".geojson");
-        url_converted = _this.datapath(dataset) + ("/json/converted-" + i + ".geojson");
         res_i = HTTP.call('GET', url_industrial);
-        res_i.success(function(data) {
+        res_i.done(function(data) {
           var bounds, f, feats;
           if (Settings.requireDemography) {
             feats = (function() {
@@ -1117,7 +1132,7 @@
             feats = data.features;
           }
           _this.industrial.addFeatures(feats);
-          if (true) {
+          if (i === 0) {
             bounds = _this.industrial.L.getBounds();
             map.fitBounds(bounds);
           }
@@ -1125,11 +1140,17 @@
           _this.updateVisibleFeatures();
           return calculateStuff(_this.visibleIndustrialFeatures);
         });
+        return res_i;
+      };
+      loadConvertedChunk = function(i) {
+        var res_c, url_converted;
+        url_converted = _this.datapath(dataset) + ("/json/converted-" + i + ".geojson");
         res_c = HTTP.call('GET', url_converted);
-        return res_c.success(function(data) {
+        res_c.success(function(data) {
           _this.converted.addFeatures(data.features);
           return ILC.vectorLayers['converted-parcels'] = _this.converted.L;
         });
+        return res_c;
       };
       map = this.map;
       limit_str = limit != null ? '?limit=' + limit : '';
@@ -1138,11 +1159,24 @@
       this.industrial.L.addTo(map);
       Colormap.updatePreviews(Settings.initialColorBins);
       Colormap.setCurrent(0);
-      _results = [];
-      for (i = _i = 0; _i <= 2; i = ++_i) {
-        _results.push(loadChunk(i));
-      }
-      return _results;
+      chunks = 0;
+      return async.whilst((function() {
+        return true;
+      }), function(callback) {
+        var res;
+        res = loadIndustrialChunk(chunks);
+        res.done(function() {
+          return setTimeout((function() {
+            return callback();
+          }), 1000);
+        });
+        res.fail(function(err) {
+          return callback(err);
+        });
+        return chunks += 1;
+      }, function(err) {
+        return console.log('done reading industrial polygons');
+      });
     },
     loadData: function(dataset) {
       var $opt, $optgroup, code, code3, codes, groups, list, name, res, title, _i, _j, _len, _len1,
@@ -1156,20 +1190,22 @@
       res.success(function(data) {
         return _this.naics_list = data.naics_list;
       });
-      res = HTTP.blocking('GET', this.datapath(dataset) + '/brownfields.geojson');
-      res.success(function(data) {
-        _this.layers.brownfields = L.geoJson(data, {
-          pointToLayer: function(feature, latlng) {
-            return new L.Marker(latlng, {
-              clickable: false,
-              icon: L.divIcon({
-                className: 'brownfield-divicon'
-              })
-            });
-          }
+      if (!Settings.skipBrownfields) {
+        res = HTTP.blocking('GET', this.datapath(dataset) + '/brownfields.geojson');
+        res.success(function(data) {
+          _this.layers.brownfields = L.geoJson(data, {
+            pointToLayer: function(feature, latlng) {
+              return new L.Marker(latlng, {
+                clickable: false,
+                icon: L.divIcon({
+                  className: 'brownfield-divicon'
+                })
+              });
+            }
+          });
+          return ILC.vectorLayers['brownfields'] = _this.layers.brownfields;
         });
-        return ILC.vectorLayers['brownfields'] = _this.layers.brownfields;
-      });
+      }
       list = (function() {
         var _ref, _results;
         _ref = this.naics_list;
@@ -1359,7 +1395,6 @@
             this.svg.select('.y.axis').transition().duration(777).attr('transform', "translate(" + baseX + ", 0)").call(this.yAxis());
             for (which in data) {
               datum = data[which];
-              console.debug(data, this.svg);
               this.svg.select("path." + which).datum(datum).transition().duration(777).attr('d', this.lines[which]);
             }
             return this.show();
@@ -1428,20 +1463,8 @@
           return $(this.selector).find(".bar rect");
         },
         update: function() {
-          var d, data, f, features, mapBounds, risk, values;
-          mapBounds = ILC.map.getBounds();
-          features = (function() {
-            var _i, _len, _ref, _results;
-            _ref = ILC.visibleIndustrialFeatures;
-            _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              f = _ref[_i];
-              if ((f.risk() != null) && f.L.getBounds().intersects(mapBounds)) {
-                _results.push(f);
-              }
-            }
-            return _results;
-          })();
+          var d, data, features, risk, values;
+          features = ILC.visibleIndustrialFeatures;
           values = features.map(function(f) {
             return f.risk();
           });

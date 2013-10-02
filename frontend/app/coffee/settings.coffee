@@ -13,6 +13,7 @@ window.Settings =
 	graphWidth: 180
 	barGraphWidth: 50
 	lineGraphHeight: 125
+	maxVisibleFeatures: 1000
 
 	graphs:
 		trends:
@@ -24,6 +25,7 @@ window.Settings =
 	useDemography: true  # don't care about demography for now
 	requireDemography: true  # don't show features without non-null demography (race at least) data
 	switchLatLng: true  # if incoming polygon data is longitude, latitude
+	skipBrownfields: true
 
 	baseStyle: ->
 		weight: 1

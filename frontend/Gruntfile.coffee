@@ -82,7 +82,7 @@ module.exports = (grunt) ->
 	# grunt.loadNpmTasks('grunt-contrib-copy')
 	grunt.loadNpmTasks('grunt-contrib-watch')
 	grunt.loadNpmTasks('grunt-contrib-compass')
-	# grunt.loadNpmTasks('grunt-contrib-jade')
+	grunt.loadNpmTasks('grunt-contrib-jade')
 	grunt.loadNpmTasks('grunt-contrib-connect')
 	grunt.loadNpmTasks('grunt-notify')
 
@@ -93,9 +93,15 @@ module.exports = (grunt) ->
 		'watch'
 	]
 
+	# grunt.registerTask 'dev', [
+	# 	'jade:dist'
+	# 	'default'
+	# 	'watch:jade'
+	# ]
+
 	grunt.registerTask 'build', [
 		# 'copy:dist'
-		# 'jade:dist'
+		'jade:dist'
 		'coffee:compile'
 		'compass:dist'
 	]

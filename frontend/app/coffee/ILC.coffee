@@ -75,6 +75,7 @@ window.ILC =
 		.on 'moveend', (e) =>
 			if @graphs.histogram.layout?
 				@graphs.histogram.update()
+			ILC.updateVisibleFeatures()
 		.on 'zoomend', (e) =>
 			zoom = e.target._zoom
 			ILC.resizeDivIcons(zoom)
@@ -111,12 +112,21 @@ window.ILC =
 		group = ILC.industrial
 		group.L.clearLayers()
 		pxScale = @pxScale()
-
-		@visibleIndustrialFeatures = 
-			for id, f of group.items when f.size_metric * pxScale > Settings.minSizeMetric and (@currentNAICS3 == null or f.naics3 == @currentNAICS3)
+		mapBounds = ILC.map.getBounds()
+		num = 0
+		@visibleIndustrialFeatures = []
+		for f in group.sorted when f.risk()? and (@currentNAICS3 == null or f.naics3 == @currentNAICS3) and f.L.getBounds().intersects(mapBounds) 
+			if num < Settings.maxVisibleFeatures #and f.size_metric * pxScale > Settings.minSizeMetric
 				f.pxSizeEstimate = f.size_metric * pxScale
 				group.L.addLayer(f.L)
-				f
+				@visibleIndustrialFeatures.push f
+			num += 1
+		numVisible = @visibleIndustrialFeatures.length
+		if numVisible < num
+			$('#feature-limit').html("showing #{numVisible} of #{num} features").fadeIn()
+		else
+			$('#feature-limit').html("showing #{numVisible} of #{num} features").fadeOut()
+		console.log 'num features visible:', @visibleIndustrialFeatures.length, num
 		if @colormap()? and @visibleIndustrialFeatures.length > previousNum
 			@updateFeatures()
 
@@ -134,7 +144,7 @@ window.ILC =
 			f.updateColor(colormap)
 
 	getRiskRange: ->
-		# features = @visibleIndustrialFeatures 
+		# features = @visibleIndustrialFeatures
 		features = @industrial.items
 		risks = (f.risk() for id, f of features)
 		extent = [Math.min.apply(null, risks), Math.max.apply(null, risks)]
@@ -188,27 +198,33 @@ window.ILC =
 			ILC.resetLegend()
 			@updateFeatures()
 
-		loadChunk = (i) =>
+		loadIndustrialChunk = (i) =>
 			url_industrial = @datapath(dataset) + "/json/industrial-#{i}.geojson"
-			url_converted = @datapath(dataset) + "/json/converted-#{i}.geojson"
+
 			res_i = HTTP.call 'GET', url_industrial
-			res_i.success (data) =>
+			res_i.done (data) =>
 				if Settings.requireDemography
 					feats = (f for f in data.features when f.properties.demography.race.multi?)
 				else
 					feats = data.features
 				@industrial.addFeatures(feats)
-				if true  # TODO: do it if it's the first call to complete
+				if i == 0
 					bounds = @industrial.L.getBounds()
 					map.fitBounds(bounds) 
 				ILC.vectorLayers['industrial-parcels'] = @industrial.L
 				@updateVisibleFeatures()
 				calculateStuff(@visibleIndustrialFeatures)
+			res_i
+
+
+		loadConvertedChunk = (i) =>
+			url_converted = @datapath(dataset) + "/json/converted-#{i}.geojson"
 
 			res_c = HTTP.call 'GET', url_converted
 			res_c.success (data) =>
 				@converted.addFeatures(data.features)
 				ILC.vectorLayers['converted-parcels'] = @converted.L
+			res_c
 
 
 		map = @map
@@ -226,8 +242,18 @@ window.ILC =
 		Colormap.updatePreviews(Settings.initialColorBins)
 		Colormap.setCurrent(0)
 
-		for i in [0..2]
-			loadChunk(i)
+		chunks = 0
+		async.whilst (() -> true),
+			(callback) -> 
+				res = loadIndustrialChunk(chunks)
+				res.done () -> setTimeout (-> callback()), 1000
+				res.fail (err) -> callback(err)
+				chunks += 1
+			,
+			(err) ->
+				console.log 'done reading industrial polygons'
+		
+
 
 
 
@@ -242,19 +268,20 @@ window.ILC =
 		res.success (data) =>
 			@naics_list = data.naics_list
 
-		res = HTTP.blocking 'GET',  @datapath(dataset) + '/brownfields.geojson'
-		res.success (data) =>
-			@layers.brownfields = L.geoJson data,
-				pointToLayer: (feature, latlng) ->
-					new L.Marker latlng,
-						clickable: false
-						icon: L.divIcon
-							className: 'brownfield-divicon'
-						# icon: L.icon
-						#     iconUrl: 'static/img/brownfield-icon.png',
-						#     iconSize: [24, 24],
-						#     iconAnchor: [12, 12],
-			ILC.vectorLayers['brownfields'] = @layers.brownfields
+		if not Settings.skipBrownfields
+			res = HTTP.blocking 'GET',  @datapath(dataset) + '/brownfields.geojson'
+			res.success (data) =>
+				@layers.brownfields = L.geoJson data,
+					pointToLayer: (feature, latlng) ->
+						new L.Marker latlng,
+							clickable: false
+							icon: L.divIcon
+								className: 'brownfield-divicon'
+							# icon: L.icon
+							#     iconUrl: 'static/img/brownfield-icon.png',
+							#     iconSize: [24, 24],
+							#     iconAnchor: [12, 12],
+				ILC.vectorLayers['brownfields'] = @layers.brownfields
 
 		list = ([code, title] for code, title of @naics_list when title != '???' )
 		list = list.sort (a, b) -> 
@@ -455,7 +482,6 @@ window.ILC =
 						.call(@yAxis())
 
 					for which, datum of data
-						console.debug data, @svg
 						@svg.select("path.#{ which }")
 							.datum(datum)
 							.transition().duration(777)
@@ -514,8 +540,7 @@ window.ILC =
 				$(@selector).find(".bar rect")
 
 			update: ->
-				mapBounds = ILC.map.getBounds()
-				features = (f for f in ILC.visibleIndustrialFeatures when f.risk()? and f.L.getBounds().intersects(mapBounds))
+				features = ILC.visibleIndustrialFeatures
 				values = features.map (f) -> f.risk()
 
 				# maxval = Math.max.apply( Math, values )

@@ -59,6 +59,17 @@ $trends-color-state-manufacturing: #222;
 	border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
+#feature-limit {
+	@include panel;
+	@include border-radius(5px);
+	width: 200px;
+	position: fixed;
+	left: 50%;
+	top: $panel-padding;
+	margin-left: -100px;
+	// background: white;
+}
+
 .panel-container {
 	z-index: 10;
 	text-align: left;
