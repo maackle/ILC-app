@@ -30,6 +30,10 @@ block scripts
 	//- script(src="scripts/app-init.js")
 
 
+mixin infobox(doc_hash, text)
+	|  
+	a(href="/documentation/#"+doc_hash, class="infobox", title=text) [?]
+
 block body
 	//- div.controls
 		//- a.reset(href="#") reset
@@ -93,10 +97,12 @@ block body
 					.block.pies
 						#race-pie.pie
 							.graph-title Neighbors
+								+infobox('neighbors', "[TODO] The racial breakdown of the 1-mile radius around this tract")
 							.graph
 							ul.legend.small
 								//- auto
 						#occupation-pie.block.pie
+								+infobox('occupation', "[TODO] The occupation breakdown of the 5-mile radius around this tract")
 							.graph-title Occupation
 							.graph
 							ul.legend.small
@@ -105,6 +111,7 @@ block body
 						#naics-trends-graph
 							.info
 								.graph-title Employment Trends
+									+infobox('employment-trends', "[TODO] The trends in employment from 1990 to present across three areas of interest")
 								.naics-title 
 								//- auto
 								a.naics-filter-select(href="") (set as industry filter)
@@ -121,7 +128,8 @@ block body
 										.line
 										| NC Mfg.
 						#risk-histogram
-							.graph-title Risk Distribution
+							.graph-title Probability Distribution
+								+infobox('occupation', "[TODO] A histogram of the conversion probability for all currently visible industrial tracts")
 					a.collapse(href="#") &times;
 				.collapsed
 					a.expand(href="#")
@@ -138,8 +146,8 @@ block body
 				.expanded
 					h2 controls
 
-					h4 Probability
-					section#value-picker
+					h4.meck-only Probability
+					section#value-picker.meck-only
 						select.risk-select
 							option(value="risk_main", selected) Any
 							option(value="risk_res") Residential
@@ -149,8 +157,11 @@ block body
 					section#vector-picker
 						div.vector-choices.btn-group.btn-group-vertical(data-toggle="buttons-checkbox")
 							button.btn.btn-small.active(data-id="industrial-parcels") Industrial Parcels
+								+infobox('occupation', "[TODO]")
 							button.btn.btn-small(data-id="converted-parcels") Converted Parcels
+								+infobox('occupation', "[TODO]")
 							button.btn.btn-small(data-id="brownfields") Brownfields
+								+infobox('occupation', "[TODO]")
 
 					h4 Raster Layers
 					section#raster-picker

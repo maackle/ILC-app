@@ -78,13 +78,15 @@
           <div class="expanded">
             <div class="block pies">
               <div id="race-pie" class="pie">
-                <div class="graph-title">Neighbors</div>
+                <div class="graph-title">Neighbors <a href="/documentation/#neighbors" title="[TODO] The racial breakdown of the 1-mile radius around this tract" class="infobox">[?]</a>
+                </div>
                 <div class="graph"></div>
                 <ul class="legend small">
                 </ul>
               </div>
-              <div id="occupation-pie" class="block pie">
-                <div class="graph-title">Occupation</div>
+              <div id="occupation-pie" class="block pie"> <a href="/documentation/#occupation" title="[TODO] The occupation breakdown of the 5-mile radius around this tract" class="infobox">[?]</a>
+              </div>
+              <div class="graph-title">Occupation
                 <div class="graph"></div>
                 <ul class="legend small">
                 </ul>
@@ -93,7 +95,8 @@
             <div class="block right">
               <div id="naics-trends-graph">
                 <div class="info">
-                  <div class="graph-title">Employment Trends</div>
+                  <div class="graph-title">Employment Trends <a href="/documentation/#employment-trends" title="[TODO] The trends in employment from 1990 to present across three areas of interest" class="infobox">[?]</a>
+                  </div>
                   <div class="naics-title"> </div><a href="" class="naics-filter-select">(set as industry filter)</a>
                   <div class="legend">
                     <div class="item ind-county">
@@ -109,7 +112,8 @@
                 </div>
               </div>
               <div id="risk-histogram">
-                <div class="graph-title">Risk Distribution</div>
+                <div class="graph-title">Probability Distribution <a href="/documentation/#occupation" title="[TODO] A histogram of the conversion probability for all currently visible industrial tracts" class="infobox">[?]</a>
+                </div>
               </div>
             </div><a href="#" class="collapse">&times;</a>
           </div>
@@ -124,8 +128,8 @@
         <div class="main-control-container togglable-panel">
           <div class="expanded">
             <h2>controls</h2>
-            <h4>Probability</h4>
-            <section id="value-picker">
+            <h4 class="meck-only">Probability</h4>
+            <section id="value-picker" class="meck-only">
               <select class="risk-select">
                 <option value="risk_main" selected>Any</option>
                 <option value="risk_res">Residential</option>
@@ -135,9 +139,12 @@
             <h4>Vector Layers</h4>
             <section id="vector-picker">
               <div data-toggle="buttons-checkbox" class="vector-choices btn-group btn-group-vertical">
-                <button data-id="industrial-parcels" class="btn btn-small active">Industrial Parcels</button>
-                <button data-id="converted-parcels" class="btn btn-small">Converted Parcels</button>
-                <button data-id="brownfields" class="btn btn-small">Brownfields</button>
+                <button data-id="industrial-parcels" class="btn btn-small active">Industrial Parcels <a href="/documentation/#occupation" title="[TODO]" class="infobox">[?]</a>
+                </button>
+                <button data-id="converted-parcels" class="btn btn-small">Converted Parcels <a href="/documentation/#occupation" title="[TODO]" class="infobox">[?]</a>
+                </button>
+                <button data-id="brownfields" class="btn btn-small">Brownfields <a href="/documentation/#occupation" title="[TODO]" class="infobox">[?]</a>
+                </button>
               </div>
             </section>
             <h4>Raster Layers</h4>

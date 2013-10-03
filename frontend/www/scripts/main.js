@@ -85,6 +85,7 @@
     barGraphWidth: 50,
     lineGraphHeight: 125,
     maxVisibleFeatures: 1000,
+    DEBUG_MODE: true,
     graphs: {
       trends: {
         colors: [[251, 128, 114], [100, 222, 60], [10, 10, 10]]
@@ -928,7 +929,9 @@
       this.graphs.histogram.initialize();
       this.graphs.demography.race.initialize();
       this.graphs.demography.occupation.initialize();
-      return this.pxScale();
+      if (dataset === 'cook') {
+        return $('.meck-only').remove();
+      }
     },
     initLeaflet: function(id) {
       var _this = this;
@@ -1159,7 +1162,7 @@
       Colormap.setCurrent(0);
       chunks = 0;
       return async.whilst((function() {
-        return true;
+        return !Settings.DEBUG_MODE || chunks < 1;
       }), function(callback) {
         var res;
         res = loadIndustrialChunk(chunks);

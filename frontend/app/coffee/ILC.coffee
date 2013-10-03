@@ -49,7 +49,9 @@ window.ILC =
 		@graphs.histogram.initialize()
 		@graphs.demography.race.initialize()
 		@graphs.demography.occupation.initialize()
-		@pxScale()
+		# @pxScale()
+		if dataset == 'cook'
+			$('.meck-only').remove()  # TODO: read settings
 		
 
 	## Returns the initialized map object
@@ -243,7 +245,7 @@ window.ILC =
 		Colormap.setCurrent(0)
 
 		chunks = 0
-		async.whilst (() -> true),
+		async.whilst (() -> not Settings.DEBUG_MODE or chunks < 1),
 			(callback) -> 
 				res = loadIndustrialChunk(chunks)
 				res.done () -> setTimeout (-> callback()), 1000

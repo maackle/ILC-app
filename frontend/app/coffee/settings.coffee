@@ -15,6 +15,9 @@ window.Settings =
 	lineGraphHeight: 125
 	maxVisibleFeatures: 1000
 
+	DEBUG_MODE: true
+
+
 	graphs:
 		trends:
 			colors: [[251,128,114], [100, 222, 60], [10, 10, 10]]

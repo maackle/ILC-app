@@ -5,7 +5,6 @@
 - can use CBSA to figure out FIPS list
 - use ST_Touches to get FIPS of adjacent counties
 
-- Corridors parcels typo
 
 EXECUTION TIME: 12 hours for process-demography meck !!!
 
@@ -13,40 +12,12 @@ EXECUTION TIME: 12 hours for process-demography meck !!!
 
 
 STATIC SITE
-- get funder logos up
-	- whatworks collaborative
-	- brookings institution
-	- NYU furman center for real estate and open policy
-	- joint center for housing studies at harvard
-- get graphics from josh
 
-how to
-	- pictorial tutorial
-	- show features
-	- similar to socialexplorer
 
 set up on AWS	
 
 
-GRAPH
-- filter by year
-- type
 
-- instead of link name, have actual text description
-
-- click chaarles robinson
-	- center node
-	- list all things associated
-	- right hand side gives description of what these different nodes are
-
-click a node
-	- right hand side shows paragraphs for all nodes attached to this node or
-	- the link and the two associated nodes
-
-allow "verb" for links
-	- bidirectional or directional
-
-most fields are optional
 
 ----------------------------------------------
 
