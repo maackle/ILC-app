@@ -8,6 +8,8 @@ $ ->
 # 		placement: 'top'
 # 		trigger: 'click'
 
+	datasetFromHash = window.location.hash.substring(1) or 'meck'
+
 	if google? then geocoder = new google.maps.Geocoder();
 
 	$('#legends-and-colormaps .toggle-colormaps').click (e) ->
@@ -117,8 +119,8 @@ $ ->
 			console.error "google geocoder failed to load"
 		false
 
-	for abbr, label of Settings.convertedCategories
-		color = Settings.convertedColors[abbr]
+	for abbr, label of Settings.convertedCategories[datasetFromHash]
+		color = Settings.convertedColors[datasetFromHash][abbr]
 		$('.legend-container.converted-parcels ul.legend').append("""
 			<li>
 				<div class="color" style="border: 3px solid #{color}"></div>
@@ -136,6 +138,6 @@ $ ->
 	
 	$ ->
 		ILC.initialize
-			dataset: window.location.hash.substring(1) or 'meck'
+			dataset: datasetFromHash
 			limit: 500
 		

@@ -85,7 +85,7 @@
     barGraphWidth: 50,
     lineGraphHeight: 125,
     maxVisibleFeatures: 1000,
-    DEBUG_MODE: false,
+    DEBUG_MODE: true,
     graphs: {
       trends: {
         colors: [[251, 128, 114], [100, 222, 60], [10, 10, 10]]
@@ -126,21 +126,43 @@
   };
 
   Settings.convertedColors = {
-    'SFR': 'rgb(0, 200, 0)',
-    'MFR': 'rgb(0, 100, 0)',
-    'COM': 'rgb(255, 0, 0)',
-    'OFF': 'rgb(0, 0, 200)',
-    'OTH': 'rgb(200, 0, 200)',
-    'NON': Settings.noDataColor
+    cook: {
+      'R': 'rgb(0, 200, 0)',
+      'C': 'rgb(255, 0, 0)',
+      'I': 'magenta',
+      'AG': 'magenta',
+      'OS': 'magenta',
+      'TCU': 'magenta',
+      'NON': Settings.noDataColor
+    },
+    meck: {
+      'SFR': 'rgb(0, 200, 0)',
+      'MFR': 'rgb(0, 100, 0)',
+      'COM': 'rgb(255, 0, 0)',
+      'OFF': 'rgb(0, 0, 200)',
+      'OTH': 'rgb(200, 0, 200)',
+      'NON': Settings.noDataColor
+    }
   };
 
   Settings.convertedCategories = {
-    'SFR': 'Single Family Residential',
-    'MFR': 'Multi Family Residential',
-    'COM': 'Commercial',
-    'OFF': 'Office',
-    'OTH': 'Other',
-    'NON': 'No Data'
+    cook: {
+      'R': 'Residential',
+      'C': 'Commercial',
+      'I': 'Industrial ???',
+      'AG': 'Agriculture ???',
+      'OS': 'OS ???',
+      'TCU': 'TCU ???',
+      'NON': 'No Data'
+    },
+    meck: {
+      'SFR': 'Single Family Residential',
+      'MFR': 'Multi Family Residential',
+      'COM': 'Commercial',
+      'OFF': 'Office',
+      'OTH': 'Other',
+      'NON': 'No Data'
+    }
   };
 
   window.lerp = function(a, b, f) {
@@ -817,18 +839,19 @@
     __extends(ConvertedPolygon, _super);
 
     function ConvertedPolygon(data) {
+      var color, convProp, dataset;
       ConvertedPolygon.__super__.constructor.call(this, data.geometry.coordinates);
-      this.convertedTo = (function() {
-        switch (data.properties.twlsm.trim().toUpperCase()) {
-          case 'R':
-            return '';
-        }
-      })();
+      dataset = ILC.dataset;
+      convProp = dataset === 'cook' ? 'twlsm' : 'cnvrtd_t';
+      this.convertedTo = data.properties[convProp].trim().toUpperCase();
+      color = Settings.convertedColors[dataset][this.convertedTo];
+      if (color == null) {
+        console.log(this.convertedTo);
+      }
       this.L.setStyle({
         fillOpacity: 0,
         weight: 3,
-        color: Settings.convertedColors[data.converted_to] || Settings.convertedColors['NON'],
-        fillColor: null,
+        color: color || Settings.convertedColors[dataset]['NON'],
         clickable: false
       });
     }
@@ -1165,7 +1188,7 @@
       Colormap.updatePreviews(Settings.initialColorBins);
       Colormap.setCurrent(0);
       chunks = 0;
-      return async.whilst((function() {
+      async.whilst((function() {
         return !Settings.DEBUG_MODE || chunks < 1;
       }), function(callback) {
         var res;
@@ -1181,6 +1204,24 @@
         return chunks += 1;
       }, function(err) {
         return console.log('done reading industrial polygons');
+      });
+      chunks = 0;
+      return async.whilst((function() {
+        return !Settings.DEBUG_MODE || chunks < 1;
+      }), function(callback) {
+        var res;
+        res = loadConvertedChunk(chunks);
+        res.done(function() {
+          return setTimeout((function() {
+            return callback();
+          }), 1000);
+        });
+        res.fail(function(err) {
+          return callback(err);
+        });
+        return chunks += 1;
+      }, function(err) {
+        return console.log('done reading converted polygons');
       });
     },
     loadData: function(dataset) {
@@ -1569,7 +1610,8 @@
   };
 
   $(function() {
-    var abbr, color, geocoder, label, vec_btn_container, _ref;
+    var abbr, color, datasetFromHash, geocoder, label, vec_btn_container, _ref;
+    datasetFromHash = window.location.hash.substring(1) || 'meck';
     if (typeof google !== "undefined" && google !== null) {
       geocoder = new google.maps.Geocoder();
     }
@@ -1701,10 +1743,10 @@
       }
       return false;
     });
-    _ref = Settings.convertedCategories;
+    _ref = Settings.convertedCategories[datasetFromHash];
     for (abbr in _ref) {
       label = _ref[abbr];
-      color = Settings.convertedColors[abbr];
+      color = Settings.convertedColors[datasetFromHash][abbr];
       $('.legend-container.converted-parcels ul.legend').append("<li>\n	<div class=\"color\" style=\"border: 3px solid " + color + "\"></div>\n	<div class=\"label\">" + label + "</div>\n</li>");
     }
     HTTP.setup();
@@ -1714,7 +1756,7 @@
     console.log("here we go");
     return $(function() {
       return ILC.initialize({
-        dataset: window.location.hash.substring(1) || 'meck',
+        dataset: datasetFromHash,
         limit: 500
       });
     });

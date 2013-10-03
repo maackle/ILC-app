@@ -259,6 +259,17 @@ window.ILC =
 			(err) ->
 				console.log 'done reading industrial polygons'
 		
+		chunks = 0
+		async.whilst (() -> not Settings.DEBUG_MODE or chunks < 1),
+			(callback) -> 
+				res = loadConvertedChunk(chunks)
+				res.done () -> setTimeout (-> callback()), 1000
+				res.fail (err) -> callback(err)
+				chunks += 1
+			,
+			(err) ->
+				console.log 'done reading converted polygons'
+		
 
 
 

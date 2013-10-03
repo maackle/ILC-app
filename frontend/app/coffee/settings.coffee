@@ -15,7 +15,7 @@ window.Settings =
 	lineGraphHeight: 125
 	maxVisibleFeatures: 1000
 
-	DEBUG_MODE: false	# limit number of polygons to 1000 or so
+	DEBUG_MODE: true	# limit number of polygons to 1000 or so
 
 
 	graphs:
@@ -67,20 +67,38 @@ window.Settings =
 		]
 
 Settings.convertedColors =
-	'SFR': 'rgb(0, 200, 0)',
-	'MFR': 'rgb(0, 100, 0)',
-	'COM': 'rgb(255, 0, 0)',
-	'OFF': 'rgb(0, 0, 200)',
-	'OTH': 'rgb(200, 0, 200)',
-	'NON': Settings.noDataColor,
+	cook:
+		'R': 'rgb(0, 200, 0)',
+		'C': 'rgb(255, 0, 0)',
+		'I': 'magenta',
+		'AG': 'magenta',
+		'OS': 'magenta',
+		'TCU': 'magenta',
+		'NON': Settings.noDataColor,
+	meck:
+		'SFR': 'rgb(0, 200, 0)',
+		'MFR': 'rgb(0, 100, 0)',
+		'COM': 'rgb(255, 0, 0)',
+		'OFF': 'rgb(0, 0, 200)',
+		'OTH': 'rgb(200, 0, 200)',
+		'NON': Settings.noDataColor,
 
 Settings.convertedCategories =
-	'SFR': 'Single Family Residential',
-	'MFR': 'Multi Family Residential',
-	'COM': 'Commercial',
-	'OFF': 'Office',
-	'OTH': 'Other',
-	'NON': 'No Data',
+	cook:
+		'R': 'Residential',
+		'C': 'Commercial',
+		'I': 'Industrial ???',
+		'AG': 'Agriculture ???',
+		'OS': 'OS ???',
+		'TCU': 'TCU ???',
+		'NON': 'No Data',
+	meck:
+		'SFR': 'Single Family Residential',
+		'MFR': 'Multi Family Residential',
+		'COM': 'Commercial',
+		'OFF': 'Office',
+		'OTH': 'Other',
+		'NON': 'No Data',
 
 
 
