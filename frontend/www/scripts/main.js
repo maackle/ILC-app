@@ -922,6 +922,7 @@
     initialize: function(opts) {
       var dataset, limit;
       dataset = opts.dataset, limit = opts.limit;
+      this.dataset = dataset;
       this.initLeaflet('leaflet-map');
       ILC.addPolygons(dataset, limit);
       ILC.loadData(dataset);
@@ -929,8 +930,11 @@
       this.graphs.histogram.initialize();
       this.graphs.demography.race.initialize();
       this.graphs.demography.occupation.initialize();
-      if (dataset === 'cook') {
-        return $('.meck-only').remove();
+      if (dataset !== 'meck') {
+        $('.meck-only').remove();
+      }
+      if (dataset !== 'cook') {
+        return $('.cook-only').remove();
       }
     },
     initLeaflet: function(id) {
@@ -1089,7 +1093,7 @@
         $('#legend .raster-legends img').hide();
       }
       if ((id != null) && id !== '') {
-        urlTemplate = "images/tiles/" + id + "/{z}/{x}/{y}." + fmt;
+        urlTemplate = this.datapath("" + this.dataset + "/tiles/" + id + "/{z}/{x}/{y}." + fmt);
         this.currentRasterLayer = L.tileLayer(urlTemplate, opts).addTo(this.map);
         ILC.graphs.hide();
         $("#legend .raster-legends img[data-id=" + id + "]").fadeIn();
@@ -1566,7 +1570,9 @@
 
   $(function() {
     var abbr, color, geocoder, label, vec_btn_container, _ref;
-    geocoder = new google.maps.Geocoder();
+    if (typeof google !== "undefined" && google !== null) {
+      geocoder = new google.maps.Geocoder();
+    }
     $('#legends-and-colormaps .toggle-colormaps').click(function(e) {
       if ($(this).hasClass('active')) {
         $('#colormap-picker').fadeOut();
@@ -1657,7 +1663,11 @@
         return ILC.addVector(key);
       }
     });
-    $('#raster-picker .raster-choices .btn').on('click', function(e) {
+    $('#raster-picker .raster-choices .clear-all').on('click', function(e) {
+      $('#raster-picker .raster-choices input').attr('checked', false);
+      return ILC.setRaster('');
+    });
+    $('#raster-picker .raster-choices input').on('change', function(e) {
       var fmt, key;
       key = $(this).attr('data-id');
       fmt = $(this).attr('data-fmt');
@@ -1665,8 +1675,7 @@
         return ILC.setRaster(key, fmt, {
           minZoom: Settings.baseMinZoom,
           maxZoom: Settings.rasterMaxZoom,
-          opacity: 1.0,
-          tms: true
+          opacity: 1.0
         });
       }
     });
@@ -1674,14 +1683,18 @@
       var address;
       e.preventDefault();
       address = $(this).find('.address').val();
-      geocoder.geocode({
-        address: address
-      }, function(results, status) {
-        var latlng, loc;
-        loc = results[0].geometry.location;
-        latlng = [loc.jb, loc.kb];
-        return ILC.map.setView(latlng, 14);
-      });
+      if (geocoder != null) {
+        geocoder.geocode({
+          address: address
+        }, function(results, status) {
+          var latlng, loc;
+          loc = results[0].geometry.location;
+          latlng = [loc.jb, loc.kb];
+          return ILC.map.setView(latlng, 14);
+        });
+      } else {
+        console.error("google geocoder failed to load");
+      }
       return false;
     });
     _ref = Settings.convertedCategories;

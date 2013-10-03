@@ -2,6 +2,10 @@
 
 @import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700);
 
+.infobox {
+	font-size: 12px;
+}
+
 body {
 	font-size: 13px;
 	font-family: 'Roboto Slab', serif;
@@ -383,6 +387,7 @@ ul.legend {
 	}
 
 	.raster-legends {
+		margin-top: 10px;
 		img.raster-legend {
 			display: none;
 		}
@@ -495,6 +500,7 @@ ul.legend {
 #raster-picker {
 
 	label {
+		@include border-radius(5px);
 		display: block;
 		background: rgba(255, 255, 255, 0.5);
 		padding: 4px;
@@ -507,6 +513,8 @@ ul.legend {
 
 		span {
 			display: inline-block;
+			margin-left: 5px;
+			font-size: 11.9px;
 		}
 	}
 }

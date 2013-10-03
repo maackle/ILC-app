@@ -85,8 +85,11 @@ block body
 									li.color(style="background: brown")
 									li.label Brownfields
 						.raster-legends
-							img.raster-legend(src="/static/tiles/corridors-wedges/legend.png", data-id="corridors-wedges")
-							img.raster-legend(src="/static/tiles/planned-improvements/legend.png", data-id="planned-improvements")
+							img.raster-legend(src="data/meck/tiles/corridors-wedges/legend.png", data-id="corridors-wedges")
+							img.raster-legend(src="data/meck/tiles/planned-improvements/legend.png", data-id="planned-improvements")
+							img.raster-legend(src="data/cook/tiles/capital-improvements/legend.png", data-id="capital-improvements")
+							img.raster-legend(src="data/cook/tiles/concept/legend.png", data-id="concept")
+							img.raster-legend(src="data/cook/tiles/rail/legend.png", data-id="rail")
 
 						a.collapse(href="#") &times;
 
@@ -165,10 +168,26 @@ block body
 
 					h4 Raster Layers
 					section#raster-picker
-						div.raster-choices.btn-group.btn-group-vertical(data-toggle="buttons-radio")
-							button.btn.btn-small(data-id="", class="active") None
-							button.btn.btn-small(data-id="corridors-wedges", data-fmt="png") Corridors Wedges
-							button.btn.btn-small(data-id="planned-improvements", data-fmt="jpg") Planned Improvements
+						div.raster-choices
+							label.choice.meck-only
+								input(type="radio", name="raster_selection", value="corridors-wedges", data-id="corridors-wedges", data-fmt="png") 
+								span Corridors Wedges
+							label.choice.meck-only
+								input(type="radio", name="raster_selection", value="planned-improvements", data-id="planned-improvements", data-fmt="jpg")
+								span Planned Improvements
+
+							label.choice.cook-only
+								input(type="radio", name="raster_selection", value="capital-improvements", data-id="capital-improvements", data-fmt="png")
+								span Capital Improvements
+							label.choice.cook-only
+								input(type="radio", name="raster_selection", value="concept", data-id="concept", data-fmt="png")
+								span Concept
+							label.choice.cook-only
+								input(type="radio", name="raster_selection", value="rail", data-id="rail", data-fmt="png")
+								span Rail
+
+
+							button.btn.btn-small(data-id="", class="clear-all") Clear
 
 					h4 Industry Filter
 					section#industry-picker

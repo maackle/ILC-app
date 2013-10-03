@@ -68,7 +68,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="raster-legends"><img src="/static/tiles/corridors-wedges/legend.png" data-id="corridors-wedges" class="raster-legend"><img src="/static/tiles/planned-improvements/legend.png" data-id="planned-improvements" class="raster-legend"></div><a href="#" class="collapse">&times;</a>
+              <div class="raster-legends"><img src="data/meck/tiles/corridors-wedges/legend.png" data-id="corridors-wedges" class="raster-legend"><img src="data/meck/tiles/planned-improvements/legend.png" data-id="planned-improvements" class="raster-legend"><img src="data/cook/tiles/capital-improvements/legend.png" data-id="capital-improvements" class="raster-legend"><img src="data/cook/tiles/concept/legend.png" data-id="concept" class="raster-legend"><img src="data/cook/tiles/rail/legend.png" data-id="rail" class="raster-legend"></div><a href="#" class="collapse">&times;</a>
             </div>
           </div>
         </div>
@@ -149,10 +149,23 @@
             </section>
             <h4>Raster Layers</h4>
             <section id="raster-picker">
-              <div data-toggle="buttons-radio" class="raster-choices btn-group btn-group-vertical">
-                <button data-id="" class="btn btn-small active">None</button>
-                <button data-id="corridors-wedges" data-fmt="png" class="btn btn-small">Corridors Wedges</button>
-                <button data-id="planned-improvements" data-fmt="jpg" class="btn btn-small">Planned Improvements</button>
+              <div class="raster-choices">
+                <label class="choice meck-only">
+                  <input type="radio" name="raster_selection" value="corridors-wedges" data-id="corridors-wedges" data-fmt="png"><span>Corridors Wedges</span>
+                </label>
+                <label class="choice meck-only">
+                  <input type="radio" name="raster_selection" value="planned-improvements" data-id="planned-improvements" data-fmt="jpg"><span>Planned Improvements</span>
+                </label>
+                <label class="choice cook-only">
+                  <input type="radio" name="raster_selection" value="capital-improvements" data-id="capital-improvements" data-fmt="png"><span>Capital Improvements</span>
+                </label>
+                <label class="choice cook-only">
+                  <input type="radio" name="raster_selection" value="concept" data-id="concept" data-fmt="png"><span>Concept</span>
+                </label>
+                <label class="choice cook-only">
+                  <input type="radio" name="raster_selection" value="rail" data-id="rail" data-fmt="png"><span>Rail</span>
+                </label>
+                <button data-id="" class="btn btn-small clear-all">Clear</button>
               </div>
             </section>
             <h4>Industry Filter</h4>

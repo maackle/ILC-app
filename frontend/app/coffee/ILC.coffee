@@ -42,6 +42,7 @@ window.ILC =
 
 	initialize: (opts) ->
 		{dataset, limit} = opts
+		@dataset = dataset
 		@initLeaflet('leaflet-map')
 		ILC.addPolygons(dataset, limit)
 		ILC.loadData(dataset)
@@ -50,8 +51,10 @@ window.ILC =
 		@graphs.demography.race.initialize()
 		@graphs.demography.occupation.initialize()
 		# @pxScale()
-		if dataset == 'cook'
+		if dataset != 'meck'
 			$('.meck-only').remove()  # TODO: read settings
+		if dataset != 'cook'
+			$('.cook-only').remove()  # TODO: read settings
 		
 
 	## Returns the initialized map object
@@ -181,7 +184,7 @@ window.ILC =
 			$('#legend .raster-legends img').hide()
 		
 		if id? && id != ''
-			urlTemplate = "images/tiles/#{ id }/{z}/{x}/{y}.#{ fmt }"
+			urlTemplate = @datapath("#{@dataset}/tiles/#{ id }/{z}/{x}/{y}.#{ fmt }")
 			@currentRasterLayer = L.tileLayer(urlTemplate, opts).addTo(@map)
 			ILC.graphs.hide()
 			$("#legend .raster-legends img[data-id=#{id}]").fadeIn()
@@ -244,6 +247,7 @@ window.ILC =
 		Colormap.updatePreviews(Settings.initialColorBins)
 		Colormap.setCurrent(0)
 
+		# TODO: save these layers but only add them to map when the mouse has not moved for 1 second
 		chunks = 0
 		async.whilst (() -> not Settings.DEBUG_MODE or chunks < 1),
 			(callback) -> 

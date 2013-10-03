@@ -1,0 +1,11 @@
+{
+  "name": "rail",
+  "version": "1.0.0",
+  "description": "",
+  "type": "overlay",
+  "format": "png",
+  "minzoom": "9",
+  "maxzoom": "13",
+  "bounds": "-87.94933449,41.63498235,-87.51381672,42.05049096",
+  "profile": "mercator"
+}

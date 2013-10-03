@@ -8,7 +8,7 @@ $ ->
 # 		placement: 'top'
 # 		trigger: 'click'
 
-	geocoder = new google.maps.Geocoder();
+	if google? then geocoder = new google.maps.Geocoder();
 
 	$('#legends-and-colormaps .toggle-colormaps').click (e) ->
 		if $(this).hasClass('active')
@@ -87,7 +87,10 @@ $ ->
 			ILC.addVector key
 
 	# TODO use bounds and individual options
-	$('#raster-picker .raster-choices .btn').on 'click', (e) ->
+	$('#raster-picker .raster-choices .clear-all').on 'click', (e) ->
+		$('#raster-picker .raster-choices input').attr('checked', false)
+		ILC.setRaster ''
+	$('#raster-picker .raster-choices input').on 'change', (e) ->
 		key = $(this).attr('data-id')
 		fmt = $(this).attr('data-fmt')
 		if key != ILC.currentRasterKey
@@ -95,18 +98,21 @@ $ ->
 				minZoom: Settings.baseMinZoom
 				maxZoom: Settings.rasterMaxZoom
 				opacity: 1.0
-				tms: true
+				# tms: true
 				# bounds: [[34.97780000323601, -81.08615238986796], [35.42838178194739, -80.56556496757148]]
 
 	$('#address-picker form').on 'submit', (e) ->
 		e.preventDefault()
 		address = $(this).find('.address').val()
-		geocoder.geocode
-			address: address
-			(results, status) ->
-				loc = results[0].geometry.location
-				latlng = [loc.jb, loc.kb]
-				ILC.map.setView latlng, 14
+		if geocoder?
+			geocoder.geocode
+				address: address
+				(results, status) ->
+					loc = results[0].geometry.location
+					latlng = [loc.jb, loc.kb]
+					ILC.map.setView latlng, 14
+		else
+			console.error "google geocoder failed to load"
 		false
 
 	for abbr, label of Settings.convertedCategories

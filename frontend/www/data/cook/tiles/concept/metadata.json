@@ -1,0 +1,11 @@
+{
+  "name": "concept",
+  "version": "1.0.0",
+  "description": "",
+  "type": "overlay",
+  "format": "png",
+  "minzoom": "7",
+  "maxzoom": "11",
+  "bounds": "-88.75471745,41.19625421,-87.46076790,42.50006261",
+  "profile": "mercator"
+}

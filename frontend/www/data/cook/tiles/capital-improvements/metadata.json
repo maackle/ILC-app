@@ -1,0 +1,11 @@
+{
+  "name": "capital improvements",
+  "version": "1.0.0",
+  "description": "",
+  "type": "overlay",
+  "format": "png",
+  "minzoom": "7",
+  "maxzoom": "12",
+  "bounds": "-88.76073892,41.20213950,-87.39841660,42.54296276",
+  "profile": "mercator"
+}
