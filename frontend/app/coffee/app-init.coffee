@@ -94,13 +94,15 @@ $ ->
 		key = $(this).attr('data-id')
 		fmt = $(this).attr('data-fmt')
 		if key != ILC.currentRasterKey
-			ILC.setRaster key, fmt,
+			opts = 
 				minZoom: Settings.baseMinZoom
 				maxZoom: Settings.rasterMaxZoom
 				opacity: 1.0
-				# tms: true
 				# bounds: [[34.97780000323601, -81.08615238986796], [35.42838178194739, -80.56556496757148]]
-
+			if ILC.dataset == 'meck'
+				opts.tms = true
+			ILC.setRaster key, fmt, opts
+				
 	$('#address-picker form').on 'submit', (e) ->
 		e.preventDefault()
 		address = $(this).find('.address').val()

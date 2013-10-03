@@ -85,7 +85,7 @@
     barGraphWidth: 50,
     lineGraphHeight: 125,
     maxVisibleFeatures: 1000,
-    DEBUG_MODE: true,
+    DEBUG_MODE: false,
     graphs: {
       trends: {
         colors: [[251, 128, 114], [100, 222, 60], [10, 10, 10]]
@@ -1668,15 +1668,19 @@
       return ILC.setRaster('');
     });
     $('#raster-picker .raster-choices input').on('change', function(e) {
-      var fmt, key;
+      var fmt, key, opts;
       key = $(this).attr('data-id');
       fmt = $(this).attr('data-fmt');
       if (key !== ILC.currentRasterKey) {
-        return ILC.setRaster(key, fmt, {
+        opts = {
           minZoom: Settings.baseMinZoom,
           maxZoom: Settings.rasterMaxZoom,
           opacity: 1.0
-        });
+        };
+        if (ILC.dataset === 'meck') {
+          opts.tms = true;
+        }
+        return ILC.setRaster(key, fmt, opts);
       }
     });
     $('#address-picker form').on('submit', function(e) {

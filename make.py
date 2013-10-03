@@ -448,7 +448,7 @@ def task_generate_industrial(*project_names):
             occupation_names = [o['name'] for o in project.demography['occupation_categories']]
 
             query_template = """
-                SELECT *, AsText(geom) as geom_wkt from {industrial} i
+                SELECT *, AsText(CastToMultiPolygon(geom)) as geom_wkt from {industrial} i
             """
             if settings.USE_DEMOGRAPHY:
                 query_template += " LEFT JOIN {race} r ON r.gid = i.gid LEFT JOIN {occupation} o ON o.gid = i.gid "

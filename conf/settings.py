@@ -18,7 +18,7 @@ COUNTIES_TABLE = '_G_counties'
 DEMOGRAPHY_TABLE = '_G_demography'
 
 USE_DEMOGRAPHY = True
-FEATURE_CHUNK_SIZE = 1000  # How many features go into a single geojson file?
+FEATURE_CHUNK_SIZE = 2500  # How many features go into a single geojson file?
 BACKEND_CHUNK_SIZE = 250   # break up intensive SQL insertions into batches of this size
 
 
