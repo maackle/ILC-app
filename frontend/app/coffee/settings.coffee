@@ -15,7 +15,7 @@ window.Settings =
 	lineGraphHeight: 125
 	maxVisibleFeatures: 1000
 
-	DEBUG_MODE: true	# limit number of polygons to 1000 or so
+	DEBUG_MODE: false	# limit number of polygons to 1000 or so
 
 
 	graphs:

@@ -85,7 +85,7 @@
     barGraphWidth: 50,
     lineGraphHeight: 125,
     maxVisibleFeatures: 1000,
-    DEBUG_MODE: true,
+    DEBUG_MODE: false,
     graphs: {
       trends: {
         colors: [[251, 128, 114], [100, 222, 60], [10, 10, 10]]
