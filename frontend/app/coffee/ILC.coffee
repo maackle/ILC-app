@@ -409,12 +409,17 @@ window.ILC =
 						.attr 'transform', "translate(#{ margin.left }, #{ margin.top })"
 
 				lineStyle = (name) -> 
+					opts = 
 					fill: 'none'
 					class: name
 					stroke: (
 						if name=='county' then makeColorString(Settings.graphs.trends.colors[0])
 						else if name=='state' then makeColorString(Settings.graphs.trends.colors[1])
 						else makeColorString(Settings.graphs.trends.colors[2])
+					)
+					'stroke-width': (
+						if name=='county' then 2
+						else 1
 					)
 
 				@svg.append('path').attr(lineStyle('county'))
@@ -453,41 +458,52 @@ window.ILC =
 						ILC.updateVisibleFeatures()
 						false
 
-					console.log ILC.naics_trends
-
-					countywide = ILC.naics_trends.countywide[naics_code]
-					nationwide = ILC.naics_trends.nationwide[naics_code]
-
+					countywide = ILC.naics_trends.countywide[naics_code] or []
+					nationwide = ILC.naics_trends.nationwide[naics_code] or []
 					# statewide is different -- it's a total across all industries
-					statewide = ILC.naics_trends.statewide["31-33"]
+					statewide = ILC.naics_trends.statewide["31-33"] or []
 
-					data =
-						county:   if countywide? then countywide.emp_growth else []
-						state:    if statewide? then statewide.emp_growth else []
-						nation:    if nationwide? then nationwide.emp_growth else []
+					data = {}
 
-					countywide_base_year = if countywide? then countywide.base_year else null
-					statewide_base_year = if statewide? then statewide.base_year else null
+					# ASSUMPTIONS:
+					# - data starts at 1990
+					# - county data will always be the limiting factor, e.g. will always start the same or later than state or national
+					# 
+					# State and national data will be full from 1990 - present
+					# However county data may be sparse, with no values before baseYear
+					# and other values cut out
+					
+					if countywide.emp_growth?
+						data.county = countywide.emp_growth.filter (d) -> d.value?
+						countywide_base_year = data.county.map((d) -> d.year).reduce((a,b) -> if a < b then a else b)
+						console.assert(countywide_base_year == parseInt(countywide.base_year))
+					else
+						console.warn 'no county data', countywide
+						data.county = []
+						countywide_base_year = 1990
+
+					statewide_base_year = if statewide? then parseInt(statewide.base_year) else null
+					console.assert(statewide_base_year == 1990)
+					baseYear = Math.max(countywide_base_year, statewide_base_year)
+					baseX = @x(baseYear)
 
 					meta = 
 						county:
-							baseYear: countywide_base_year
+							baseIndex: 0
 						state:
-							baseYear: statewide_base_year
+							baseIndex: baseYear - 1990
 						nation:
-							baseYear: 1990
+							baseIndex: baseYear - 1990
 
-					baseYear = Math.max(countywide_base_year, statewide_base_year)
-					# baseYear = parseInt(Math.random() * 20 + 1990)
-					baseIndex = baseYear - 1990
-					baseX = @x(baseYear)
+					data.state = statewide.emp_growth
+					data.nation = nationwide.emp_growth
 
 					min = 999
 					max = -999
 					for k, datum of data when datum?
 						for d in datum
-							if baseIndex > 0
-								d.value /= datum[baseIndex].value
+							# console.log datum, d, baseIndex
+							d.value /= datum[meta[k].baseIndex].value
 							if d.value < min then min = d.value
 							if d.value > max then max = d.value
 
@@ -602,7 +618,8 @@ window.ILC =
 
 			initialize: ->
 				sz = Settings.histogramMaxValue
-				values = d3.range(1000).map( (x) -> sz * d3.random.irwinHall(10)(x) );
+				# values = d3.range(1000).map( (x) -> sz * d3.random.irwinHall(10)(x) )
+				values = d3.range(1000).map (x) -> 0
 
 				# A formatter for counts.
 				formatCount = d3.format(",.0f");

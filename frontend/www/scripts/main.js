@@ -71,7 +71,7 @@
   };
 
   window.Settings = {
-    histogramMaxValue: 0.5,
+    histogramMaxValue: 1.0,
     initialColorBins: 5,
     fillOpacity: 0.9,
     activeColor: '#4c4',
@@ -1366,10 +1366,12 @@
           });
           this.svg = d3.select('#naics-trends-graph').append('svg:svg').attr('width', width).attr('height', height).append('g').attr('transform', "translate(" + margin.left + ", " + margin.top + ")");
           lineStyle = function(name) {
-            return {
+            var opts;
+            return opts = {
               fill: 'none',
               "class": name,
-              stroke: (name === 'county' ? makeColorString(Settings.graphs.trends.colors[0]) : name === 'state' ? makeColorString(Settings.graphs.trends.colors[1]) : makeColorString(Settings.graphs.trends.colors[2]))
+              stroke: (name === 'county' ? makeColorString(Settings.graphs.trends.colors[0]) : name === 'state' ? makeColorString(Settings.graphs.trends.colors[1]) : makeColorString(Settings.graphs.trends.colors[2])),
+              'stroke-width': (name === 'county' ? 2 : 1)
             };
           };
           this.svg.append('path').attr(lineStyle('county'));
@@ -1379,7 +1381,7 @@
           return this.svg.append("g").attr("class", "y axis").call(this.yAxis());
         },
         setNAICS: function(naics_code) {
-          var baseIndex, baseX, baseYear, countywide, countywide_base_year, d, data, datum, extent, k, max, meta, min, naicsTitle, nationwide, statewide, statewide_base_year, which, _i, _len;
+          var baseX, baseYear, countywide, countywide_base_year, d, data, datum, extent, k, max, meta, min, naicsTitle, nationwide, statewide, statewide_base_year, which, _i, _len;
           if ((naics_code != null) && naics_code > 0) {
             this.show();
             naicsTitle = ILC.naics_list[naics_code];
@@ -1392,31 +1394,46 @@
               ILC.updateVisibleFeatures();
               return false;
             });
-            console.log(ILC.naics_trends);
-            countywide = ILC.naics_trends.countywide[naics_code];
-            nationwide = ILC.naics_trends.nationwide[naics_code];
-            statewide = ILC.naics_trends.statewide["31-33"];
-            data = {
-              county: countywide != null ? countywide.emp_growth : [],
-              state: statewide != null ? statewide.emp_growth : [],
-              nation: nationwide != null ? nationwide.emp_growth : []
-            };
-            countywide_base_year = countywide != null ? countywide.base_year : null;
-            statewide_base_year = statewide != null ? statewide.base_year : null;
+            countywide = ILC.naics_trends.countywide[naics_code] || [];
+            nationwide = ILC.naics_trends.nationwide[naics_code] || [];
+            statewide = ILC.naics_trends.statewide["31-33"] || [];
+            data = {};
+            if (countywide.emp_growth != null) {
+              data.county = countywide.emp_growth.filter(function(d) {
+                return d.value != null;
+              });
+              countywide_base_year = data.county.map(function(d) {
+                return d.year;
+              }).reduce(function(a, b) {
+                if (a < b) {
+                  return a;
+                } else {
+                  return b;
+                }
+              });
+              console.assert(countywide_base_year === parseInt(countywide.base_year));
+            } else {
+              console.warn('no county data', countywide);
+              data.county = [];
+              countywide_base_year = 1990;
+            }
+            statewide_base_year = statewide != null ? parseInt(statewide.base_year) : null;
+            console.assert(statewide_base_year === 1990);
+            baseYear = Math.max(countywide_base_year, statewide_base_year);
+            baseX = this.x(baseYear);
             meta = {
               county: {
-                baseYear: countywide_base_year
+                baseIndex: 0
               },
               state: {
-                baseYear: statewide_base_year
+                baseIndex: baseYear - 1990
               },
               nation: {
-                baseYear: 1990
+                baseIndex: baseYear - 1990
               }
             };
-            baseYear = Math.max(countywide_base_year, statewide_base_year);
-            baseIndex = baseYear - 1990;
-            baseX = this.x(baseYear);
+            data.state = statewide.emp_growth;
+            data.nation = nationwide.emp_growth;
             min = 999;
             max = -999;
             for (k in data) {
@@ -1424,9 +1441,7 @@
               if (datum != null) {
                 for (_i = 0, _len = datum.length; _i < _len; _i++) {
                   d = datum[_i];
-                  if (baseIndex > 0) {
-                    d.value /= datum[baseIndex].value;
-                  }
+                  d.value /= datum[meta[k].baseIndex].value;
                   if (d.value < min) {
                     min = d.value;
                   }
@@ -1564,7 +1579,7 @@
           var axisSpace, bar, barHeight, data, formatCount, height, hist, margin, svg, sz, values, width, x, xAxis, y;
           sz = Settings.histogramMaxValue;
           values = d3.range(1000).map(function(x) {
-            return sz * d3.random.irwinHall(10)(x);
+            return 0;
           });
           formatCount = d3.format(",.0f");
           axisSpace = 25;

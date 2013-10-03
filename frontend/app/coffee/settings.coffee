@@ -1,6 +1,6 @@
 
 window.Settings =
-	histogramMaxValue: 0.5
+	histogramMaxValue: 1.0
 	initialColorBins: 5
 	fillOpacity: 0.9
 	activeColor: '#4c4'
@@ -20,7 +20,7 @@ window.Settings =
 
 	graphs:
 		trends:
-			colors: [[251,128,114], [100, 222, 60], [10, 10, 10]]
+			colors: [[251,128,114], [100, 222, 60], [10, 10, 10]]  # must also change in css
 
 	panOnActivate: true
 
