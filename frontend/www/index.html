@@ -78,14 +78,14 @@
           <div class="expanded">
             <div class="block pies">
               <div id="race-pie" class="pie">
-                <div class="graph-title">Neighbors <a href="/documentation/#neighbors" title="[TODO] The racial breakdown of the 1-mile radius around this tract" class="infobox">[?]</a>
+                <div class="graph-title">Neighbors <a href="/documentation/#neighbors" title="For each parcel, the racial composition of residents within 1 mile radius is displayed." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a>
                 </div>
                 <div class="graph"></div>
                 <ul class="legend small">
                 </ul>
               </div>
               <div id="occupation-pie" class="block pie">
-                <div class="graph-title">Occupation <a href="/documentation/#occupation" title="[TODO] The occupation breakdown of the 5-mile radius around this tract" class="infobox">[?]</a>
+                <div class="graph-title">Occupation <a href="/documentation/#occupation" title="For each parcel, the occupational composition of workers within 5 mile radius is displayed." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a>
                 </div>
                 <div class="graph"></div>
                 <ul class="legend small">
@@ -95,7 +95,7 @@
             <div class="block right">
               <div id="naics-trends-graph">
                 <div class="info">
-                  <div class="graph-title">Employment Trends <a href="/documentation/#employment-trends" title="[TODO] The trends in employment from 1990 to present across three areas of interest" class="infobox">[?]</a>
+                  <div class="graph-title">Employment Trends <a href="/documentation/#employment-trends" title="Using BLS data, employment trends in the industry in the US is displayed relative to 1990. Also of interest are the trends in manufacturing, the trends in the industry in the county." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a>
                   </div>
                   <div class="naics-title"> </div><a href="" class="naics-filter-select">(set as industry filter)</a>
                   <div class="legend">
@@ -112,7 +112,7 @@
                 </div>
               </div>
               <div id="risk-histogram">
-                <div class="graph-title">Probability Distribution <a href="/documentation/#occupation" title="[TODO] A histogram of the conversion probability for all currently visible industrial tracts" class="infobox">[?]</a>
+                <div class="graph-title">Probability Distribution <a href="/documentation/#probability-distribution" title="The histogram of the risk in the neighbourhood of a selected parcel is displayed. The location of the selected parcel relative to its neighbourhood is highlighted." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a>
                 </div>
               </div>
             </div><a href="#" class="collapse">&times;</a>
@@ -128,7 +128,8 @@
         <div class="main-control-container togglable-panel">
           <div class="expanded">
             <h2>controls</h2>
-            <h4 class="meck-only">Probability</h4>
+            <h4 class="meck-only">Probability <a href="/documentation/#probability-of-conversion" title="A logit model that uses various explanatory variables are used to project the probability of conversion of an industrial Parcel." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a>
+            </h4>
             <section id="value-picker" class="meck-only">
               <select class="risk-select">
                 <option value="risk_main" selected>Any</option>
@@ -139,11 +140,11 @@
             <h4>Vector Layers</h4>
             <section id="vector-picker">
               <div data-toggle="buttons-checkbox" class="vector-choices btn-group btn-group-vertical">
-                <button data-id="industrial-parcels" class="btn btn-small active">Industrial Parcels <a href="/documentation/#occupation" title="[TODO]" class="infobox">[?]</a>
+                <button data-id="industrial-parcels" class="btn btn-small active">Industrial Parcels <a href="/documentation/#industrial-parcels" title="Cadastral data that have industrial (NAICS 31-33) establishments in 2010." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a>
                 </button>
-                <button data-id="converted-parcels" class="btn btn-small">Converted Parcels <a href="/documentation/#occupation" title="[TODO]" class="infobox">[?]</a>
+                <button data-id="converted-parcels" class="btn btn-small">Converted Parcels <a href="/documentation/#converted-parcels" title="Cadastral data that have industrial (NAICS 31-33) establishments sometime between 2000-2010 but by 2010 no longer have an establishment and land use is coded as a non-industrial use." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a>
                 </button>
-                <button data-id="brownfields" class="btn btn-small">Brownfields <a href="/documentation/#occupation" title="[TODO]" class="infobox">[?]</a>
+                <button data-id="brownfields" class="btn btn-small">Brownfield Sites <a href="/documentation/#brownfields" title="Sites that are complicated by the presence or potential presence of a hazardous substance, pollutant, or contaminant." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a>
                 </button>
               </div>
             </section>
@@ -151,24 +152,27 @@
             <section id="raster-picker">
               <div class="raster-choices">
                 <label class="choice meck-only">
-                  <input type="radio" name="raster_selection" value="corridors-wedges" data-id="corridors-wedges" data-fmt="png"><span>Corridors Wedges</span>
+                  <input type="radio" name="raster_selection" value="corridors-wedges" data-id="corridors-wedges" data-fmt="png"><span>Corridors & Wedges <a href="/documentation/#corridors-wedges" title="The &quot;Centers and Corridors&quot; development framework was originally introduced in 1994 and is the City of Charlotte's adopted overarching policy for organizing and guiding growth and development within the City of Charlotte." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a></span>
                 </label>
                 <label class="choice meck-only">
-                  <input type="radio" name="raster_selection" value="planned-improvements" data-id="planned-improvements" data-fmt="jpg"><span>Planned Improvements</span>
+                  <input type="radio" name="raster_selection" value="planned-improvements" data-id="planned-improvements" data-fmt="jpg"><span>Planned Improvements <a href="/documentation/#planned-improvements" title="Planned transportation improvements from the Mecklenburg-Union MPO." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a></span>
                 </label>
                 <label class="choice cook-only">
-                  <input type="radio" name="raster_selection" value="capital-improvements" data-id="capital-improvements" data-fmt="png"><span>Capital Improvements</span>
+                  <input type="radio" name="raster_selection" value="capital-improvements" data-id="capital-improvements" data-fmt="png"><span>Capital Improvements <a href="/documentation/#capital-improvements" title="This map explains specific transportation improvement projects for Chicago, Cook County, and the Northeastern Illinois Metropolitan Area. It was adapted from the CMAP 2030 Regional Transportation Plan adopted in 2008." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a></span>
                 </label>
                 <label class="choice cook-only">
-                  <input type="radio" name="raster_selection" value="concept" data-id="concept" data-fmt="png"><span>Concept</span>
+                  <input type="radio" name="raster_selection" value="concept" data-id="concept" data-fmt="png"><span>Concept 2030 <a href="/documentation/#concept-2030" title="This map explains the overall vision for future development intensity, infill, and transportation improvements for Chicago, Cook County, and the Northeastern Illinois Metropolitan Area. It was adapted from the CMAP 2030 Regional Transportation Plan adopted in 2008.  " target="documentation" style="opacity: 0.5;" class="infobox">[?]</a></span>
                 </label>
                 <label class="choice cook-only">
-                  <input type="radio" name="raster_selection" value="rail" data-id="rail" data-fmt="png"><span>Rail</span>
+                  <input type="radio" name="raster_selection" value="rail" data-id="rail" data-fmt="png"><span>Rail Improvements <a href="/documentation/#rail-improvements" title="This map explains specific rail improvement projects for the City of Chicago. It was adapted from the CMAP 2030 Regional Transportation Plan adopted in 2008." target="documentation" style="opacity: 0.5;" class="infobox">[?]</a></span>
                 </label>
                 <button data-id="" class="btn btn-small clear-all">Clear</button>
               </div>
             </section>
-            <h4>Industry Filter</h4>
+            <h4>Industry Filter <a href="/documentation/#" title="Filter to industry to limit the visible tracts.
+
+Specific (NAICS 4) choices are shown, but the filter will only apply to its more generic (NAICS 3) category" target="documentation" style="opacity: 0.5;" class="infobox">[?]</a>
+            </h4>
             <section id="industry-picker">
               <select data-placeholder="Filter by Industry" class="industry-select">
                 <option value=""> </option>
