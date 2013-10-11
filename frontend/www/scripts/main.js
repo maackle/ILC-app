@@ -129,10 +129,7 @@
     cook: {
       'R': 'rgb(0, 200, 0)',
       'C': 'rgb(255, 0, 0)',
-      'I': 'magenta',
-      'AG': 'magenta',
-      'OS': 'magenta',
-      'TCU': 'magenta',
+      'OTH': 'magenta',
       'NON': Settings.noDataColor
     },
     meck: {
@@ -150,9 +147,7 @@
       'R': 'Residential',
       'C': 'Commercial',
       'I': 'Industrial ???',
-      'AG': 'Agriculture ???',
-      'OS': 'OS ???',
-      'TCU': 'TCU ???',
+      'OTH': 'Other',
       'NON': 'No Data'
     },
     meck: {
@@ -839,14 +834,17 @@
     __extends(ConvertedPolygon, _super);
 
     function ConvertedPolygon(data) {
-      var color, convProp, dataset;
+      var color, convProp, dataset, _ref, _ref1;
       ConvertedPolygon.__super__.constructor.call(this, data.geometry.coordinates);
       dataset = ILC.dataset;
       convProp = dataset === 'cook' ? 'twlsm' : 'cnvrtd_t';
-      this.convertedTo = data.properties[convProp].trim().toUpperCase();
+      this.convertedTo = (_ref = data.properties[convProp]) != null ? _ref.trim().toUpperCase() : void 0;
+      if (dataset === 'cook' && ((_ref1 = this.convertedTo) !== 'R' && _ref1 !== 'C')) {
+        this.convertedTo = 'OTH';
+      }
       color = Settings.convertedColors[dataset][this.convertedTo];
       if (color == null) {
-        console.log(this.convertedTo);
+        console.log('unrecognized converted type: ' + this.convertedTo);
       }
       this.L.setStyle({
         fillOpacity: 0,
