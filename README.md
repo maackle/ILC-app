@@ -6,7 +6,7 @@ Making Room for Manufacturing
 Overview
 --------
 
-The map visualization application seen on this site, henceforth known as *the app*, is a completely static website, meaning it can be run anywhere with no special server requirements.  However, these static pages need to be built, and the data needs to be pulled from many sources, processed, and converted to formats useable by the app.  All of this is done automatically.
+The map visualization application seen on [http://makingroomformanufacturing.org](http://makingroomformanufacturing.org), henceforth known as *the app*, is a completely static website, meaning it can be run anywhere with no special server requirements.  However, these static pages need to be built, and the data needs to be pulled from many sources, processed, and converted to formats useable by the app.  All of this is done automatically.
 
 Directory Structure
 -------------------
