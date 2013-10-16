@@ -7,11 +7,13 @@ class ConvertedPolygon extends Feature2D
 		dataset = ILC.dataset
 
 		convProp = if dataset == 'cook' then 'twlsm' else 'cnvrtd_t'  #TODO:CONFIG
-		@convertedTo = data.properties[convProp].trim().toUpperCase()
+		@convertedTo = data.properties[convProp]?.trim().toUpperCase()
+		if dataset == 'cook' and @convertedTo not in ['R', 'C']
+			@convertedTo = 'OTH'
 
 		color = Settings.convertedColors[dataset][@convertedTo]
 		if not color?
-			console.log @convertedTo
+			console.log 'unrecognized converted type: ' + @convertedTo
 
 		@L.setStyle
 			# dashArray: "3 6"

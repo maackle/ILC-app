@@ -32,7 +32,7 @@ block scripts
 
 mixin infobox(doc_hash, text)
 	|  
-	a(href="/documentation/#"+doc_hash, class="infobox", title=text) [?]
+	a(href="/documentation/#"+doc_hash, class="infobox", title=text, target="documentation", style="opacity: 0.5;") [?]
 
 block body
 	//- div.controls
@@ -100,13 +100,13 @@ block body
 					.block.pies
 						#race-pie.pie
 							.graph-title Neighbors
-								+infobox('neighbors', "[TODO] The racial breakdown of the 1-mile radius around this tract")
+								+infobox('neighbors', "For each parcel, the racial composition of residents within 1 mile radius is displayed.")
 							.graph
 							ul.legend.small
 								//- auto
 						#occupation-pie.block.pie
 							.graph-title Occupation
-								+infobox('occupation', "[TODO] The occupation breakdown of the 5-mile radius around this tract")
+								+infobox('occupation', "For each parcel, the occupational composition of workers within 5 mile radius is displayed.")
 							.graph
 							ul.legend.small
 								//- auto
@@ -114,7 +114,7 @@ block body
 						#naics-trends-graph
 							.info
 								.graph-title Employment Trends
-									+infobox('employment-trends', "[TODO] The trends in employment from 1990 to present across three areas of interest")
+									+infobox('employment-trends', "Using BLS data, employment trends in the industry in the US is displayed relative to 1990. Also of interest are the trends in manufacturing, the trends in the industry in the county.")
 								.naics-title 
 								//- auto
 								a.naics-filter-select(href="") (set as industry filter)
@@ -132,7 +132,7 @@ block body
 										span.naics
 						#risk-histogram
 							.graph-title Probability Distribution
-								+infobox('occupation', "[TODO] A histogram of the conversion probability for all currently visible industrial tracts")
+								+infobox('probability-distribution', "The histogram of the risk in the neighbourhood of a selected parcel is displayed. The location of the selected parcel relative to its neighbourhood is highlighted.")
 					a.collapse(href="#") &times;
 				.collapsed
 					a.expand(href="#")
@@ -150,6 +150,7 @@ block body
 					h2 controls
 
 					h4.meck-only Probability
+						+infobox('probability-of-conversion', "A logit model that uses various explanatory variables are used to project the probability of conversion of an industrial Parcel.")
 					section#value-picker.meck-only
 						select.risk-select
 							option(value="risk_main", selected) Any
@@ -160,36 +161,42 @@ block body
 					section#vector-picker
 						div.vector-choices.btn-group.btn-group-vertical(data-toggle="buttons-checkbox")
 							button.btn.btn-small.active(data-id="industrial-parcels") Industrial Parcels
-								+infobox('occupation', "[TODO]")
+								+infobox('industrial-parcels', "Cadastral data that have industrial (NAICS 31-33) establishments in 2010.")
 							button.btn.btn-small(data-id="converted-parcels") Converted Parcels
-								+infobox('occupation', "[TODO]")
-							button.btn.btn-small(data-id="brownfields") Brownfields
-								+infobox('occupation', "[TODO]")
+								+infobox('converted-parcels', "Cadastral data that have industrial (NAICS 31-33) establishments sometime between 2000-2010 but by 2010 no longer have an establishment and land use is coded as a non-industrial use.")
+							button.btn.btn-small(data-id="brownfields") Brownfield Sites
+								+infobox('brownfields', "Sites that are complicated by the presence or potential presence of a hazardous substance, pollutant, or contaminant.")
 
 					h4 Raster Layers
 					section#raster-picker
 						div.raster-choices
 							label.choice.meck-only
 								input(type="radio", name="raster_selection", value="corridors-wedges", data-id="corridors-wedges", data-fmt="png") 
-								span Corridors Wedges
+								span Corridors & Wedges
+									+infobox('corridors-wedges', "The \"Centers and Corridors\" development framework was originally introduced in 1994 and is the City of Charlotte's adopted overarching policy for organizing and guiding growth and development within the City of Charlotte.")
 							label.choice.meck-only
 								input(type="radio", name="raster_selection", value="planned-improvements", data-id="planned-improvements", data-fmt="jpg")
 								span Planned Improvements
+									+infobox('planned-improvements', "Planned transportation improvements from the Mecklenburg-Union MPO.")
 
 							label.choice.cook-only
 								input(type="radio", name="raster_selection", value="capital-improvements", data-id="capital-improvements", data-fmt="png")
 								span Capital Improvements
+									+infobox('capital-improvements', "This map explains specific transportation improvement projects for Chicago, Cook County, and the Northeastern Illinois Metropolitan Area. It was adapted from the CMAP 2030 Regional Transportation Plan adopted in 2008.")
 							label.choice.cook-only
 								input(type="radio", name="raster_selection", value="concept", data-id="concept", data-fmt="png")
-								span Concept
+								span Concept 2030
+									+infobox('concept-2030', "This map explains the overall vision for future development intensity, infill, and transportation improvements for Chicago, Cook County, and the Northeastern Illinois Metropolitan Area. It was adapted from the CMAP 2030 Regional Transportation Plan adopted in 2008.  ")
 							label.choice.cook-only
 								input(type="radio", name="raster_selection", value="rail", data-id="rail", data-fmt="png")
-								span Rail
+								span Rail Improvements
+									+infobox('rail-improvements', "This map explains specific rail improvement projects for the City of Chicago. It was adapted from the CMAP 2030 Regional Transportation Plan adopted in 2008.")
 
 
 							button.btn.btn-small(data-id="", class="clear-all") Clear
 
 					h4 Industry Filter
+						+infobox('', "Filter to industry to limit the visible tracts.\n\nSpecific (NAICS 4) choices are shown, but the filter will only apply to its more generic (NAICS 3) category")
 					section#industry-picker
 						select.industry-select(data-placeholder="Filter by Industry")
 							option(value="") 
