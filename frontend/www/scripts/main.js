@@ -96,7 +96,7 @@
     useDemography: true,
     requireDemography: true,
     switchLatLng: true,
-    skipBrownfields: true,
+    skipBrownfields: false,
     baseStyle: function() {
       return {
         weight: 1,
@@ -1091,6 +1091,7 @@
       }
     },
     addVector: function(key) {
+      console.log('addVector', key, ILC.vectorLayers);
       ILC.map.addLayer(ILC.vectorLayers[key]);
       $('#legend').find(".legend-container." + key).addClass('active').fadeIn();
       this._updateLegendVisibility();
@@ -1157,7 +1158,9 @@
           } else {
             feats = data.features;
           }
+          feats = data.features;
           _this.industrial.addFeatures(feats);
+          console.debug('feats', feats);
           if (i === 0) {
             bounds = _this.industrial.L.getBounds();
             map.fitBounds(bounds);
