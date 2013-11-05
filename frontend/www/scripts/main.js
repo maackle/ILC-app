@@ -1001,7 +1001,7 @@
     },
     resizeDivIcons: function(zoom) {
       var size;
-      size = Math.max(4, (zoom - 11) * 2 + 6);
+      size = Math.max(2.5, (zoom - 11) * 2 + 0);
       return $('.brownfield-divicon').css({
         width: size,
         height: size,
