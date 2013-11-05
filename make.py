@@ -611,11 +611,19 @@ def setup_project_directories():
         lazy_mkdir(project.app_data_dir())
 
 
-def task_build():
+def task_end2end(*project_names):
     '''
     Do everything!
     '''
-    setup_project_directories()
+    task_load_global_shapefiles()
+    task_load_project_shapefiles(*project_names)
+    task_localize_brownfields(*project_names)
+    task_localize_demography(*project_names)
+    task_process_demography(*project_names)
+    task_generate_brownfields(*project_names)
+    task_generate_converted(*project_names)
+    task_generate_industrial(*project_names)
+    task_generate_naics(*project_names)
 
 
 def task_kokoromi(*project_names):
@@ -658,6 +666,7 @@ def main():
         'generate-converted': task_generate_converted,
         'generate-naics': task_generate_naics,
         'kokoromi': task_kokoromi,
+        'end2end': task_end2end,
     }
 
     parser = argparse.ArgumentParser(
@@ -677,7 +686,7 @@ def main():
     )
 
     args = parser.parse_args()
-    method = tasks.get(args.task, task_build)
+    method = tasks.get(args.task)
     method(*args.param)
 
 

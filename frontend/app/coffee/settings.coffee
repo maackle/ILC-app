@@ -25,10 +25,10 @@ window.Settings =
 	panOnActivate: true
 
 	useLocalData: false
-	useDemography: true  # don't care about demography for now
-	requireDemography: true  # don't show features without non-null demography (race at least) data
+	useDemography: true  # set false if you don't care about demography for now
+	requireDemography: true  # set false to not show features without non-null demography (race at least) data
 	switchLatLng: true  # if incoming polygon data is longitude, latitude
-	skipBrownfields: true
+	skipBrownfields: false
 
 	baseStyle: ->
 		weight: 1

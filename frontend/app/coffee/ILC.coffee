@@ -163,6 +163,7 @@ window.ILC =
 			other.fadeIn()
 
 	addVector: (key) ->
+		console.log 'addVector', key, ILC.vectorLayers
 		ILC.map.addLayer(ILC.vectorLayers[key])
 		$('#legend').find(".legend-container.#{key}").addClass('active').fadeIn()
 		@_updateLegendVisibility()
@@ -212,7 +213,9 @@ window.ILC =
 					feats = (f for f in data.features when f.properties.demography.race.multi?)
 				else
 					feats = data.features
+				feats = data.features
 				@industrial.addFeatures(feats)
+				console.debug 'feats', feats
 				if i == 0
 					bounds = @industrial.L.getBounds()
 					map.fitBounds(bounds) 

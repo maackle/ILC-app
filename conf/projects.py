@@ -116,7 +116,7 @@ cook = ProjectDefinition(
     name='cook',
     title='Cook County, Illinois',
     industrial_parcels={
-        'shapefile': 'cook_rawdata/cook_still_industrial',
+        'shapefile': 'cook_rawdata/cook_still_industrial-WGS84',
         'probability_categories': (
             {
                 'rawname': 'PCnv_',
@@ -126,7 +126,7 @@ cook = ProjectDefinition(
         ),
     },
     demography=settings.demography_categories,
-    converted_parcels_shapefile='cook_rawdata/cook_alreadyconverted',
+    converted_parcels_shapefile='cook_rawdata/cook_alreadyconverted1',
     raster_layers=(),
     fips_list=('17031',)
 )
@@ -134,56 +134,3 @@ cook = ProjectDefinition(
 projects = set((
     meck, cook,
 ))
-
-# meck = {
-#   'name': 'meck',
-#   'title': 'Mecklenburg County, NC',
-#   'vectors': {
-#       'industrial_parcels': 'still_industrial/still_industrial.shp',
-#       'converted_parcels': 'alreadyconverted/alreadyconverted.shp',
-#   },
-#   'rasters': (
-#       {
-#           'name': 'corridors-wedges',
-#           'title': 'Corridors & Wedges',
-#           'format': 'png',
-#           'minzoom': 10,
-#           'maxzoom': 13,
-#       },
-#       # TODO ...
-#   ),
-# }
-
-
-"""
-global/
-    census.shp
-    brownfields.shp
-
-proj/
-    meck/
-        geom.shp
-        project.py
-        data/
-            industrial_parcels.shp
-            converted_parcels.shp
-
-dist/
-    meck/
-        tiles/
-            corridors-wedges/
-                legend.png
-                ...data...
-            planned-improvements/
-                legend.png
-                ...data...
-        features/
-            industrial/
-                1.geojson
-                2.geojson
-                ...
-            converted/
-                1.geojson
-                2.geojson
-                ...
-"""
