@@ -146,7 +146,6 @@
     cook: {
       'R': 'Residential',
       'C': 'Commercial',
-      'I': 'Industrial ???',
       'OTH': 'Other',
       'NON': 'No Data'
     },
@@ -1001,7 +1000,7 @@
     },
     resizeDivIcons: function(zoom) {
       var size;
-      size = Math.max(2.5, (zoom - 11) * 2 + 0);
+      size = Math.max(2.5, (zoom - 11) * 2 + 4);
       return $('.brownfield-divicon').css({
         width: size,
         height: size,
@@ -1238,8 +1237,8 @@
         return _this.naics_list = data.naics_list;
       });
       if (!Settings.skipBrownfields) {
-        res = HTTP.blocking('GET', this.datapath(dataset) + '/brownfields.geojson');
-        res.success(function(data) {
+        res = HTTP.blocking('GET', this.datapath(dataset) + '/json/brownfields.geojson');
+        res.done(function(data) {
           _this.layers.brownfields = L.geoJson(data, {
             pointToLayer: function(feature, latlng) {
               return new L.Marker(latlng, {
@@ -1250,7 +1249,11 @@
               });
             }
           });
-          return ILC.vectorLayers['brownfields'] = _this.layers.brownfields;
+          ILC.vectorLayers['brownfields'] = _this.layers.brownfields;
+          return console.debug("brownfields::: ", ILC.vectorLayers);
+        });
+        res.always(function() {
+          return console.error('problem loading brownfields', arguments);
         });
       }
       list = (function() {

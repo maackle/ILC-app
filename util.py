@@ -39,6 +39,22 @@ def load_shapefile(name, path, srid, prefix=''):
     #     geom_column_name=settings.SPATIALITE_GEOMETRY_COLUMN_NAME,
     # ))
 
+def dump_geojson(table, path):
+    line = """.dumpgeojson {table} geom {path}""".format(
+        table=table,
+        path=path,
+    )
+    print line
+    execute_sql_command(line)
+
+
+def dump_shapefile(table, path, geom_type):
+    line = """.dumpshp {table} geom {path} UTF-8 {geom_type}""".format(
+        table=table,
+        path=path,
+        geom_type=geom_type,
+    )
+    execute_sql_command(line)
 
 
 # def db_connect():

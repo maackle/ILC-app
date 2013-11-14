@@ -101,7 +101,7 @@ window.ILC =
 		@map
 
 	resizeDivIcons: (zoom) ->
-		size = Math.max(2.5, (zoom - 11)*2 + 0)
+		size = Math.max(2.5, (zoom - 11)*2 + 4)
 		$('.brownfield-divicon').css
 			width: size
 			height: size
@@ -287,10 +287,9 @@ window.ILC =
 		res = HTTP.blocking 'GET', @datapath() + '/naics-list.json'
 		res.success (data) =>
 			@naics_list = data.naics_list
-
 		if not Settings.skipBrownfields
-			res = HTTP.blocking 'GET',  @datapath(dataset) + '/brownfields.geojson'
-			res.success (data) =>
+			res = HTTP.blocking 'GET',  @datapath(dataset) + '/json/brownfields.geojson'
+			res.done (data) =>
 				@layers.brownfields = L.geoJson data,
 					pointToLayer: (feature, latlng) ->
 						new L.Marker latlng,
@@ -302,6 +301,9 @@ window.ILC =
 							#     iconSize: [24, 24],
 							#     iconAnchor: [12, 12],
 				ILC.vectorLayers['brownfields'] = @layers.brownfields
+				console.debug "brownfields::: ", ILC.vectorLayers
+			res.always =>
+				console.error 'problem loading brownfields', arguments
 
 		list = ([code, title] for code, title of @naics_list when title != '???' )
 		list = list.sort (a, b) -> 

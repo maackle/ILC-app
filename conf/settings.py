@@ -25,7 +25,8 @@ BACKEND_CHUNK_SIZE = 250   # break up intensive SQL insertions into batches of t
 global_datasets = {
     'brownfields': {
         'table': BROWNFIELDS_TABLE,
-        'path': 'nationaldata/brownfields',
+        'filename': 'EPA_brownfields_redef_P',
+        'path': 'nationaldata/EPA_brownfields_redef_P',
         'srid': GEOGRAPHIC_SRID,
     },
     'counties': {
