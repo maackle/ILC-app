@@ -155,11 +155,13 @@ def task_localize_brownfields(*names):
             extended_fips_list = "(" + ",".join("'{0}'".format(row[0]) for row in conn.execute(fips_query).fetchall()) + ")"
 
             cur = None
-            # while not cur or cur.rowcount > 0:
+
+            # need to filter by Y > 0 in this case because of some bad data...
             query = """
                 INSERT INTO {local_brownfields_table}
                 SELECT * FROM {global_brownfields_table}
                 where substr(FIPS_CODE, 1, 5) IN {extended_fips_list}
+                and Y(geom) > 0
             """.format(
                 global_brownfields_table=settings.BROWNFIELDS_TABLE,
                 local_brownfields_table=project.raw_brownfields_table,
@@ -170,48 +172,106 @@ def task_localize_brownfields(*names):
             print "rows added:", cur.rowcount
             conn.commit()
 
+
+
+
+# def db2geojson(outfilename, cur):
+
+#     with open(outfilename, 'w') as f:
+
+#         features = []
+
+#         for row in cur:         
+#             properties = {}
+#             for key in row.keys():
+#                 k = key.lower()
+#                 if k not in ('geom', 'geom_wkt'):
+#                     properties[k] = row[key]
+
+#             geometry = wkt.loads(row['geom_wkt'])
+#             geometry = geojson.loads(geojson.dumps(geometry))
+
+#             features.append({
+#                 'type': 'Feature',
+#                 'geometry': geometry,
+#                 'properties': properties,
+#             })
+
+#         f.write(json.dumps({
+#             'type': 'FeatureCollection',
+#             'features': features,
+#         }))
+
+
+
+
 def task_generate_brownfields(*names):
     if not names:
         print "Please specify the names of projects you want to load."
         print "Did nothing..."
+
     for proj_name in names:
         project = get_project(proj_name)
-        fips_list = project.fips_list
-        if len(fips_list) > 1:
-            fips_list = str(fips_list)
-        elif len(fips_list) == 1:
-            fips_list = "('{0}')".format(fips_list[0])
-        else:
-            raise "no fips_list specified"
-
-        fips_subquery = """
-            select FIPS from _G_counties 
-            where intersects(
-                geom, (
-                    select collect(geom) 
-                    from _G_counties where FIPS in {fips_list}
-                )
-            )
-        """.format(fips_list=fips_list)
-
-        with db_connect() as conn:
-            extended_fips_list = "(" + ",".join("'{0}'".format(row[0]) for row in conn.execute(fips_subquery).fetchall()) + ")"
-
-        # fips_subquery = re.sub(r"\(|\)", "", fips_list)
-        output_path = project.app_data_dir('brownfields.geojson')
-        try:
-            os.remove(output_path)
-        except OSError:
-            pass
-        sql = """SELECT * from brownfields where substr(FIPS_CODE, 1, 5) IN {extended_fips_list}""".format(extended_fips_list=extended_fips_list)
-        print sql
-        cmd = """ogr2ogr -f "GeoJSON" -sql "{sql}" -overwrite {output_path} {input_path}.shp""".format(
-            input_path=os.path.join(settings.RAW_DATA_DIR, global_datasets['brownfields']['path']),
-            output_path=output_path,
-            sql=re.sub(r"\s+|\n+", " ", sql),
-            # sql=sql,
+        json_dir = project.app_data_dir('json')
+        lazy_mkdir(json_dir)
+        dump_shapefile(project.raw_brownfields_table, os.path.join(json_dir, 'brownfields'), 'POINT')
+        # print "*** THIS STEP IS NOT COMPLETELY AUTOMATED YET!  Please follow instructions... ***"
+        # print "run the following command:"
+        outfile = os.path.join(json_dir, 'brownfields.geojson')
+        os.remove(outfile)
+        cmd = """ogr2ogr -f GeoJSON -select "PK_UID" {outfile} {infile}""".format(
+            outfile=outfile,
+            infile=os.path.join(json_dir, 'brownfields.shp'),
         )
         call(cmd, shell=True)
+
+
+# def task_generate_brownfields(*names):
+#     if not names:
+#         print "Please specify the names of projects you want to load."
+#         print "Did nothing..."
+#     for proj_name in names:
+#         project = get_project(proj_name)
+#         fips_list = project.fips_list
+#         if len(fips_list) > 1:
+#             fips_list = str(fips_list)
+#         elif len(fips_list) == 1:
+#             fips_list = "('{0}')".format(fips_list[0])
+#         else:
+#             raise "no fips_list specified"
+
+#         fips_subquery = """
+#             select FIPS from _G_counties 
+#             where intersects(
+#                 geom, (
+#                     select collect(geom) 
+#                     from _G_counties where FIPS in {fips_list}
+#                 )
+#             )
+#         """.format(fips_list=fips_list)
+
+#         with db_connect() as conn:
+#             extended_fips_list = "(" + ",".join("'{0}'".format(row[0]) for row in conn.execute(fips_subquery).fetchall()) + ")"
+
+#         # fips_subquery = re.sub(r"\(|\)", "", fips_list)
+#         output_path = project.app_data_dir('brownfields.geojson')
+#         try:
+#             os.remove(output_path)
+#         except OSError:
+#             pass
+#         sql = """SELECT * from '{table}' where substr(`FIPS_CODE`,1,5) IN {extended_fips_list}""".format(
+#             extended_fips_list=extended_fips_list,
+#             table=global_datasets['brownfields']['filename']
+#             )
+#         # sql = """SELECT * FROM 'brownfields'"""
+#         print sql
+#         cmd = """ogr2ogr -f "GeoJSON" -sql "{sql}" -overwrite {output_path} {input_path}.shp""".format(
+#             input_path=os.path.join(settings.RAW_DATA_DIR, global_datasets['brownfields']['path']),
+#             output_path=output_path,
+#             sql=re.sub(r"\s+|\n+", " ", sql),
+#             # sql=sql,
+#         )
+#         call(cmd, shell=True)
 
 
 def task_load_project_shapefiles(*names):
@@ -371,7 +431,6 @@ def create_industrial_table(*project_names):
                     probability_name_with_type_list=name_with_type_list,
                     geog_srid=settings.GEOGRAPHIC_SRID,
                 )
-
 
 def task_generate_converted(*project_names):
 
