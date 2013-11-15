@@ -146,7 +146,6 @@
     cook: {
       'R': 'Residential',
       'C': 'Commercial',
-      'I': 'Industrial ???',
       'OTH': 'Other',
       'NON': 'No Data'
     },

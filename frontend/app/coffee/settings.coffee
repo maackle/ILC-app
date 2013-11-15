@@ -88,7 +88,7 @@ Settings.convertedCategories =
 	cook:
 		'R': 'Residential',
 		'C': 'Commercial',
-		'I': 'Industrial ???',
+		# 'I': 'Industrial ???',
 		# 'AG': 'Agriculture ???',
 		# 'OS': 'OS ???',
 		# 'TCU': 'TCU ???',
